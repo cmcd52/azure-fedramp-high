@@ -1,0 +1,48 @@
+{
+  "name": "audit-eventhubs-managed-identity-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Event Hubs: Managed Identity / RBAC Auth Required",
+    "description": "Audits Azure Event Hubs namespaces that do not have a managed identity configured. FedRAMP High requires identification and authentication (IA-2) and access enforcement (AC-3). Managed Identity enables RBAC-based authentication with Event Hubs Data Sender/Receiver roles, eliminating SAS key management and enabling centralized audit logging.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Event Hubs",
+      "nistControls": ["IA-2", "AC-3"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report Event Hubs namespaces without managed identity. Deny: Block deployment. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.EventHub/namespaces"
+          },
+          {
+            "field": "identity.type",
+            "notContains": "SystemAssigned"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

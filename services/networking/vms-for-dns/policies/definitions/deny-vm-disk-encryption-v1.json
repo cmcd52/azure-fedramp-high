@@ -1,0 +1,55 @@
+{
+  "name": "deny-vm-disk-encryption-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] VMs for DNS: Disk Encryption Required",
+    "description": "Denies deployment of virtual machines without disk encryption enabled. FedRAMP High requires protection of information at rest (SC-28). DNS VMs handle sensitive DNS query data and must have Azure Disk Encryption (ADE) or host-based encryption enabled to protect OS and data disks with FIPS 140-2 validated cryptographic modules.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "VMs for DNS",
+      "nistControls": ["SC-28"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": true,
+      "fips140CertRef": "Platform module — Azure Disk Encryption uses BitLocker (FIPS 140-2 validated)",
+      "stigFindingId": "V-254239",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block VM deployment without disk encryption. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Compute/virtualMachines"
+          },
+          {
+            "not": {
+              "anyOf": [
+                {
+                  "field": "Microsoft.Compute/virtualMachines/securityProfile.encryptionAtHost",
+                  "equals": true
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

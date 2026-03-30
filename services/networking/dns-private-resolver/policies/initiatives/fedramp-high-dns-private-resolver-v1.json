@@ -1,0 +1,66 @@
+{
+  "name": "fedramp-high-dns-private-resolver-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] DNS Private Resolver Controls",
+    "description": "Policy initiative for DNS Private Resolver FedRAMP High compliance. Bundles policies for hub VNet integration and forwarding rule configuration. DNS Private Resolver provides secure inbound and outbound DNS resolution within the trusted network boundary, replacing the need for custom DNS VMs for conditional forwarding scenarios.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "DNS Private Resolver",
+      "nistControls": ["SC-7", "SC-20", "SC-21"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "vnetLinkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "VNet Link Effect",
+          "description": "Effect for the DNS Private Resolver VNet link policy."
+        }
+      },
+      "forwardingRulesEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Forwarding Rules Effect",
+          "description": "Effect for the DNS Private Resolver forwarding rules policy."
+        }
+      },
+      "allowedVnetIds": {
+        "type": "Array",
+        "defaultValue": [],
+        "metadata": {
+          "displayName": "Allowed VNet Resource IDs",
+          "description": "List of hub VNet resource IDs for the VNet link policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditDnsResolverVnetLink",
+        "policyDefinitionName": "audit-dnsresolver-vnet-link-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('vnetLinkEffect')]"
+          },
+          "allowedVnetIds": {
+            "value": "[parameters('allowedVnetIds')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditDnsResolverForwardingRules",
+        "policyDefinitionName": "audit-dnsresolver-forwarding-rules-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('forwardingRulesEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

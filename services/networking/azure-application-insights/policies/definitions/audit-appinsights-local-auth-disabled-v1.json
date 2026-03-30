@@ -1,0 +1,48 @@
+{
+  "name": "audit-appinsights-local-auth-disabled-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Application Insights: Local Authentication Disabled",
+    "description": "Audits Application Insights components that have local authentication enabled. FedRAMP High IA-2 requires unique identification and authentication of users. Disabling local authentication forces the use of Entra ID (Azure AD) for all Application Insights API access, ensuring centralized identity management, MFA enforcement, conditional access policies, and auditable authentication events.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Application Insights",
+      "nistControls": ["IA-2"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report Application Insights components with local authentication enabled. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Insights/components"
+          },
+          {
+            "field": "Microsoft.Insights/components/DisableLocalAuth",
+            "notEquals": true
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

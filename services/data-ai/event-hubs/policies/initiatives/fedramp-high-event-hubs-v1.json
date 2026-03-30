@@ -1,0 +1,73 @@
+{
+  "name": "fedramp-high-event-hubs-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Event Hubs Controls",
+    "description": "Policy initiative for Azure Event Hubs FedRAMP High compliance. Bundles policies for public access prevention, TLS 1.2 enforcement, and managed identity / RBAC authentication. Event Hubs namespaces streaming federal data must enforce network isolation, transport encryption, and identity-based access.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Event Hubs",
+      "nistControls": ["SC-7", "SC-8", "IA-2", "AC-3"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "publicAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Public Access Effect",
+          "description": "Effect for the Event Hubs public access policy."
+        }
+      },
+      "minimumTlsEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Minimum TLS Effect",
+          "description": "Effect for the Event Hubs minimum TLS policy."
+        }
+      },
+      "managedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Managed Identity Effect",
+          "description": "Effect for the Event Hubs managed identity policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "denyEventHubsPublicAccess",
+        "policyDefinitionName": "deny-eventhubs-public-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('publicAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyEventHubsMinimumTls",
+        "policyDefinitionName": "deny-eventhubs-minimum-tls-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('minimumTlsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditEventHubsManagedIdentity",
+        "policyDefinitionName": "audit-eventhubs-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('managedIdentityEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

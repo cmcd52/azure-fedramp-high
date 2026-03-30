@@ -1,0 +1,54 @@
+{
+  "name": "deny-vm-public-ip-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] VMs for DNS: No Public IP Address",
+    "description": "Denies association of public IP addresses with DNS VM network interfaces. FedRAMP High requires boundary protection (SC-7). DNS VMs are internal infrastructure components that must only be accessible via private network paths. Administrative access is provided exclusively through Azure Bastion — public IP addresses on DNS VMs are prohibited.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "VMs for DNS",
+      "nistControls": ["SC-7"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block public IP association on VM NICs. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/networkInterfaces"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Network/networkInterfaces/ipConfigurations[*]",
+              "where": {
+                "field": "Microsoft.Network/networkInterfaces/ipConfigurations[*].publicIpAddress.id",
+                "exists": true
+              }
+            },
+            "greater": 0
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

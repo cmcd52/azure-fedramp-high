@@ -1,0 +1,54 @@
+{
+  "name": "audit-vm-diagnostic-settings-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] VMs for DNS: Diagnostic Settings Must Be Enabled",
+    "description": "Audits virtual machines that do not have diagnostic settings enabled for log forwarding. FedRAMP High requires audit generation (AU-12) and audit events (AU-2). DNS VMs must forward Windows Event Logs (Security, System, Application) and performance metrics to the centralized Log Analytics workspace via Azure Monitor Agent for security monitoring and incident response.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "VMs for DNS",
+      "nistControls": ["AU-12"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "stigFindingId": "V-254247",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report non-compliance for VMs without diagnostic settings. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Compute/virtualMachines"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Compute/virtualMachines/extensions[*]",
+              "where": {
+                "field": "Microsoft.Compute/virtualMachines/extensions[*].type",
+                "equals": "AzureMonitorWindowsAgent"
+              }
+            },
+            "equals": 0
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

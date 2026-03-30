@@ -1,0 +1,58 @@
+{
+  "name": "audit-maps-cors-restrictions-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Maps: CORS Restrictions Configured",
+    "description": "Audits Azure Maps accounts to ensure CORS (Cross-Origin Resource Sharing) restrictions are configured. FedRAMP High requires information flow enforcement (AC-4). Azure Maps used in web applications must restrict CORS origins to authorized domains only, preventing unauthorized cross-origin access to map tile data and geospatial APIs.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Maps",
+      "nistControls": ["AC-4"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report Azure Maps accounts without CORS restrictions. Deny: Block deployment. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Maps/accounts"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.Maps/accounts/cors",
+                "exists": "false"
+              },
+              {
+                "count": {
+                  "field": "Microsoft.Maps/accounts/cors.corsRules[*]"
+                },
+                "equals": 0
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

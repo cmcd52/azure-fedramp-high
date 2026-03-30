@@ -1,0 +1,56 @@
+{
+  "name": "deny-loganalytics-retention-minimum-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Monitor: Log Analytics Workspace Retention Minimum 365 Days",
+    "description": "Denies creation or update of Log Analytics workspaces with retention less than 365 days. FedRAMP High AU-11 requires audit records be retained for a minimum of one year online and three years total. This policy enforces the online retention minimum at the workspace level to ensure audit logs are available for active query and investigation.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Monitor",
+      "nistControls": ["AU-11"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block workspaces with retention < 365 days. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      },
+      "minimumRetentionDays": {
+        "type": "Integer",
+        "defaultValue": 365,
+        "metadata": {
+          "displayName": "Minimum Retention Days",
+          "description": "Minimum workspace retention in days. FedRAMP High requires 365 days minimum online retention."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.OperationalInsights/workspaces"
+          },
+          {
+            "field": "Microsoft.OperationalInsights/workspaces/retentionInDays",
+            "less": "[parameters('minimumRetentionDays')]"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

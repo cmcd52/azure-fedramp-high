@@ -1,0 +1,47 @@
+{
+  "name": "deny-frontdoor-waf-enabled-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Front Door: WAF Policy Must Be Associated",
+    "description": "Denies deployment of Azure Front Door profiles without an associated Web Application Firewall (WAF) policy. FedRAMP High requires boundary protection (SC-7) and information system monitoring (SI-4). WAF provides Layer 7 application-level protection including OWASP rule sets, bot protection, and rate limiting for all traffic entering through Front Door.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Front Door",
+      "nistControls": ["SC-7", "SI-4"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block non-compliant Front Door profiles without WAF. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Cdn/profiles/securityPolicies"
+          },
+          {
+            "field": "Microsoft.Cdn/profiles/securityPolicies/parameters.wafPolicy.id",
+            "exists": false
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

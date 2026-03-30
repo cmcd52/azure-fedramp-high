@@ -1,0 +1,73 @@
+{
+  "name": "fedramp-high-azure-purview-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Purview Controls",
+    "description": "Policy initiative for Azure Purview FedRAMP High compliance. Bundles policies for public access prevention, managed identity authentication, and diagnostic settings enforcement. Purview accounts governing federal data classifications must enforce network isolation, identity-based access, and comprehensive audit logging.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Purview",
+      "nistControls": ["SC-7", "IA-2", "AU-12"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "publicAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Public Access Effect",
+          "description": "Effect for the Azure Purview public access policy."
+        }
+      },
+      "managedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Managed Identity Effect",
+          "description": "Effect for the Azure Purview managed identity policy."
+        }
+      },
+      "diagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": ["AuditIfNotExists", "Disabled"],
+        "metadata": {
+          "displayName": "Diagnostic Settings Effect",
+          "description": "Effect for the Azure Purview diagnostic settings policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "denyPurviewPublicAccess",
+        "policyDefinitionName": "deny-purview-public-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('publicAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditPurviewManagedIdentity",
+        "policyDefinitionName": "audit-purview-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('managedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditPurviewDiagnosticSettings",
+        "policyDefinitionName": "audit-purview-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('diagnosticSettingsEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

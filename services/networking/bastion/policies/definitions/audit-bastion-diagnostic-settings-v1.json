@@ -1,0 +1,54 @@
+{
+  "name": "audit-bastion-diagnostic-settings-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Bastion: Audit Diagnostic Settings Enabled",
+    "description": "Audits that Azure Bastion hosts have diagnostic settings configured to forward audit logs to a Log Analytics workspace. FedRAMP High requires audit generation (AU-12) for all privileged access events. Bastion audit logs capture session start/stop, user identity, target VM, and connection details required for privileged access monitoring.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Bastion",
+      "nistControls": ["AU-12"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": ["AuditIfNotExists", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "AuditIfNotExists: Report non-compliance when diagnostic settings are not configured on Bastion host. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Network/bastionHosts"
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Insights/diagnosticSettings",
+          "existenceCondition": {
+            "allOf": [
+              {
+                "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+                "equals": true
+              },
+              {
+                "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
+                "exists": true
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

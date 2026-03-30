@@ -1,0 +1,50 @@
+{
+  "name": "audit-dnsresolver-forwarding-rules-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] DNS Private Resolver: Custom Forwarding Rules for On-Prem DNS",
+    "description": "Audits DNS Private Resolver forwarding rulesets to ensure custom forwarding rules exist for on-premises domain resolution. FedRAMP High requires secure name/address resolution (SC-20) and boundary protection for DNS traffic (SC-21). Forwarding rules must be configured to route on-premises domain queries to designated on-prem DNS servers via ExpressRoute or VPN, ensuring split-horizon DNS resolution within the trusted network boundary.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "DNS Private Resolver",
+      "nistControls": ["SC-20", "SC-21"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report non-compliance for forwarding rulesets without rules. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/dnsForwardingRulesets"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Network/dnsForwardingRulesets/forwardingRules[*]"
+            },
+            "equals": 0
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

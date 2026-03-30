@@ -1,0 +1,60 @@
+{
+  "name": "deny-aifoundry-public-access-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure AI Foundry: No Public Access",
+    "description": "Denies deployment of Azure AI Foundry Hub and Project resources with public network access enabled. FedRAMP High requires boundary protection (SC-7). AI Foundry resources processing federal data must only be accessible via Private Endpoint or managed VNet — public network access is prohibited to prevent unauthorized data exposure.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure AI Foundry",
+      "nistControls": ["SC-7"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block AI Foundry Hub/Project with public access. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.MachineLearningServices/workspaces"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.MachineLearningServices/workspaces/kind",
+                "equals": "Hub"
+              },
+              {
+                "field": "Microsoft.MachineLearningServices/workspaces/kind",
+                "equals": "Project"
+              }
+            ]
+          },
+          {
+            "field": "Microsoft.MachineLearningServices/workspaces/publicNetworkAccess",
+            "notEquals": "Disabled"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

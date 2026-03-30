@@ -1,0 +1,68 @@
+{
+  "name": "audit-monitor-diagnostic-settings-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Monitor: Activity Log Diagnostic Settings to Log Analytics",
+    "description": "Audits that Azure Activity Log diagnostic settings are configured to send logs to a Log Analytics workspace. FedRAMP High AU-12 requires audit generation at the platform level. Activity Log captures subscription-level events (resource creation, policy assignments, RBAC changes) and must be forwarded to the centralized Log Analytics workspace for correlation, alerting, and long-term retention.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Monitor",
+      "nistControls": ["AU-12"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": ["AuditIfNotExists", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "AuditIfNotExists: Report subscriptions without Activity Log diagnostic settings to Log Analytics. Disabled: Do not evaluate."
+        }
+      },
+      "logAnalyticsWorkspaceId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Log Analytics Workspace ID",
+          "description": "The resource ID of the Log Analytics workspace that Activity Log diagnostic settings should send data to."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Resources/subscriptions"
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Insights/diagnosticSettings",
+          "existenceCondition": {
+            "allOf": [
+              {
+                "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
+                "equals": "[parameters('logAnalyticsWorkspaceId')]"
+              },
+              {
+                "count": {
+                  "field": "Microsoft.Insights/diagnosticSettings/logs[*]",
+                  "where": {
+                    "field": "Microsoft.Insights/diagnosticSettings/logs[*].enabled",
+                    "equals": "true"
+                  }
+                },
+                "greaterOrEquals": 1
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

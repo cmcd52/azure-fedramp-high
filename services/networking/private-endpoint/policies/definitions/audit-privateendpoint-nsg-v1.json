@@ -1,0 +1,52 @@
+{
+  "name": "audit-privateendpoint-nsg-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Private Endpoint: Subnet Must Have NSG",
+    "description": "Audits Private Endpoint deployments where the target subnet does not have a Network Security Group (NSG) associated. FedRAMP High requires boundary protection (SC-7) — the subnet hosting Private Endpoints must have an NSG to control inbound and outbound traffic to the private endpoint network interfaces.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Private Endpoint",
+      "nistControls": ["SC-7"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report non-compliance for PE subnets without NSG. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/virtualNetworks/subnets"
+          },
+          {
+            "field": "Microsoft.Network/virtualNetworks/subnets/privateEndpointNetworkPolicies",
+            "equals": "Enabled"
+          },
+          {
+            "field": "Microsoft.Network/virtualNetworks/subnets/networkSecurityGroup.id",
+            "exists": false
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "audit-keyvault-key-expiration-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Key Vault: Keys Must Have Expiration Date",
+    "description": "Audits Azure Key Vault keys that do not have an expiration date set. FedRAMP High requires cryptographic key establishment and management (SC-12). Keys without expiration dates may remain active indefinitely, increasing the risk of key compromise. All cryptographic keys must have rotation schedules enforced via expiration dates.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Key Vault",
+      "nistControls": ["SC-12"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report keys without expiration. Deny: Block keys without expiration. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.KeyVault/vaults/keys"
+          },
+          {
+            "field": "Microsoft.KeyVault/vaults/keys/attributes.expiresOn",
+            "exists": false
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "deny-speech-public-access-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] AI Speech Service: No Public Access",
+    "description": "Denies deployment of Azure AI Speech Service (Cognitive Services) accounts with public network access enabled. FedRAMP High requires boundary protection (SC-7). Speech services processing federal audio data — including PII in speech content — must only be accessible via Private Endpoint to prevent unauthorized interception of audio streams and transcription data.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "AI Speech Service",
+      "nistControls": ["SC-7"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block Speech Service accounts with public access. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.CognitiveServices/accounts"
+          },
+          {
+            "field": "Microsoft.CognitiveServices/accounts/kind",
+            "equals": "SpeechServices"
+          },
+          {
+            "field": "Microsoft.CognitiveServices/accounts/publicNetworkAccess",
+            "notEquals": "Disabled"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

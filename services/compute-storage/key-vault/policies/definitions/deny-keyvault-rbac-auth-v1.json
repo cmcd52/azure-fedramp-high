@@ -1,0 +1,48 @@
+{
+  "name": "deny-keyvault-rbac-auth-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Key Vault: RBAC Authorization Required",
+    "description": "Denies deployment of Azure Key Vaults without RBAC authorization enabled. FedRAMP High requires access enforcement (AC-3) and least privilege (AC-6). RBAC authorization replaces legacy vault access policies with Entra ID role-based access control, enabling fine-grained permissions, PIM just-in-time activation, and centralized access auditing.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Key Vault",
+      "nistControls": ["AC-3", "AC-6"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block Key Vaults without RBAC authorization. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.KeyVault/vaults"
+          },
+          {
+            "field": "Microsoft.KeyVault/vaults/enableRbacAuthorization",
+            "notEquals": true
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

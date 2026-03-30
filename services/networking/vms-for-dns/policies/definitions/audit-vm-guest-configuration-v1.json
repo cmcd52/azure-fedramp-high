@@ -1,0 +1,58 @@
+{
+  "name": "audit-vm-guest-configuration-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] VMs for DNS: Guest Configuration Extension Must Be Installed",
+    "description": "Audits virtual machines that do not have the Azure Guest Configuration extension installed. FedRAMP High requires security configuration management (CM-6). The Guest Configuration extension enables continuous OS-level compliance assessment against DISA STIG and CIS benchmarks, detecting configuration drift and reporting compliance status to Azure Policy.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "VMs for DNS",
+      "nistControls": ["CM-6"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "V-254243",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report non-compliance for VMs without Guest Configuration extension. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Compute/virtualMachines"
+          },
+          {
+            "field": "Microsoft.Compute/virtualMachines/storageProfile.osDisk.osType",
+            "equals": "Windows"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Compute/virtualMachines/extensions[*]",
+              "where": {
+                "field": "Microsoft.Compute/virtualMachines/extensions[*].type",
+                "equals": "ConfigurationforWindows"
+              }
+            },
+            "equals": 0
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

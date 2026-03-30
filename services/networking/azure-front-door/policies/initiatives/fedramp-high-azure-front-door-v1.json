@@ -1,0 +1,73 @@
+{
+  "name": "fedramp-high-azure-front-door-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Front Door Controls",
+    "description": "Policy initiative for Azure Front Door FedRAMP High compliance. Bundles policies for WAF association, TLS 1.2 minimum, and HTTP-to-HTTPS redirect enforcement. Front Door is the primary edge ingress point — these policies verify Layer 7 security controls meet FedRAMP High boundary protection and encryption requirements.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Front Door",
+      "nistControls": ["SC-7", "SC-8", "SC-13", "SI-4"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "wafEnabledEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "WAF Enabled Effect",
+          "description": "Effect for the Front Door WAF association policy."
+        }
+      },
+      "minimumTlsEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Minimum TLS Effect",
+          "description": "Effect for the Front Door minimum TLS version policy."
+        }
+      },
+      "httpsRedirectEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "HTTPS Redirect Effect",
+          "description": "Effect for the Front Door HTTP-to-HTTPS redirect audit policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "denyFrontDoorWafEnabled",
+        "policyDefinitionName": "deny-frontdoor-waf-enabled-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('wafEnabledEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyFrontDoorMinimumTls",
+        "policyDefinitionName": "deny-frontdoor-minimum-tls-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('minimumTlsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditFrontDoorHttpsRedirect",
+        "policyDefinitionName": "audit-frontdoor-https-redirect-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('httpsRedirectEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

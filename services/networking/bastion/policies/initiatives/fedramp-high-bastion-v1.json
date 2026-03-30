@@ -1,0 +1,55 @@
+{
+  "name": "fedramp-high-bastion-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Bastion Controls",
+    "description": "Policy initiative for Azure Bastion FedRAMP High compliance. Bundles policies for Standard SKU enforcement and diagnostic settings validation. Bastion is the only permitted method for administrative VM access in the FedRAMP High environment per Constitution Principle VI — these policies ensure the Bastion configuration meets security and audit requirements.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Bastion",
+      "nistControls": ["SC-7", "AC-17", "AU-12"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "skuStandardEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "SKU Standard Effect",
+          "description": "Effect for the Bastion Standard SKU enforcement policy."
+        }
+      },
+      "diagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": ["AuditIfNotExists", "Disabled"],
+        "metadata": {
+          "displayName": "Diagnostic Settings Effect",
+          "description": "Effect for the Bastion diagnostic settings audit policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "denyBastionSkuStandard",
+        "policyDefinitionName": "deny-bastion-sku-standard-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('skuStandardEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditBastionDiagnosticSettings",
+        "policyDefinitionName": "audit-bastion-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('diagnosticSettingsEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "audit-expressroute-private-peering-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] ExpressRoute: Audit Private Peering Only Configuration",
+    "description": "Audits that ExpressRoute circuits are configured with private peering only and do not have Microsoft peering or public peering enabled. FedRAMP High requires boundary protection (SC-7) to prevent unauthorized traffic flows over public internet paths. Private peering ensures traffic between on-premises and Azure traverses a dedicated, non-internet path.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "ExpressRoute",
+      "nistControls": ["SC-7"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report non-compliance when Microsoft peering or public peering is configured on the circuit. Disabled: Do not evaluate. Note: Deny effect is not used because peering configuration is a sub-resource managed separately from the circuit resource."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/expressRouteCircuits/peerings"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.Network/expressRouteCircuits/peerings/peeringType",
+                "equals": "MicrosoftPeering"
+              },
+              {
+                "field": "Microsoft.Network/expressRouteCircuits/peerings/peeringType",
+                "equals": "AzurePublicPeering"
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "name": "fedramp-high-azure-ai-foundry-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure AI Foundry Controls",
+    "description": "Policy initiative for Azure AI Foundry FedRAMP High compliance. Bundles policies for public access prevention, managed identity authentication, and diagnostic settings enforcement. AI Foundry Hub/Project resources processing federal data must enforce network isolation, identity-based access, and comprehensive audit logging.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure AI Foundry",
+      "nistControls": ["SC-7", "IA-2", "AU-12"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "publicAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Public Access Effect",
+          "description": "Effect for the Azure AI Foundry public access policy."
+        }
+      },
+      "managedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Managed Identity Effect",
+          "description": "Effect for the Azure AI Foundry managed identity policy."
+        }
+      },
+      "diagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": ["AuditIfNotExists", "Disabled"],
+        "metadata": {
+          "displayName": "Diagnostic Settings Effect",
+          "description": "Effect for the Azure AI Foundry diagnostic settings policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "denyAIFoundryPublicAccess",
+        "policyDefinitionName": "deny-aifoundry-public-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('publicAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditAIFoundryManagedIdentity",
+        "policyDefinitionName": "audit-aifoundry-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('managedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditAIFoundryDiagnosticSettings",
+        "policyDefinitionName": "audit-aifoundry-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('diagnosticSettingsEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

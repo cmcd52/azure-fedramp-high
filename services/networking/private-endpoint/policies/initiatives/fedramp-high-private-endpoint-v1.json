@@ -1,0 +1,94 @@
+{
+  "name": "fedramp-high-private-endpoint-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Private Endpoint Controls",
+    "description": "Policy initiative for Azure Private Endpoint FedRAMP High compliance. Bundles policies for Private Endpoint requirement enforcement, DNS zone group configuration, and NSG on PE subnets. Private Endpoints are the primary network isolation mechanism — these policies ensure all services use PE with proper DNS integration and subnet security.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Private Endpoint",
+      "nistControls": ["SC-7", "SC-20"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "peRequiredEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "PE Required Effect",
+          "description": "Effect for the Private Endpoint required policy."
+        }
+      },
+      "dnsConfiguredEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "DNS Configured Effect",
+          "description": "Effect for the Private Endpoint DNS zone group policy."
+        }
+      },
+      "nsgEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "NSG Effect",
+          "description": "Effect for the Private Endpoint subnet NSG policy."
+        }
+      },
+      "resourceType": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Resource Type",
+          "description": "The Azure resource type to enforce PE on."
+        }
+      },
+      "publicNetworkAccessField": {
+        "type": "String",
+        "defaultValue": "publicNetworkAccess",
+        "metadata": {
+          "displayName": "Public Network Access Field",
+          "description": "The field name for public network access on the target resource type."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "denyPrivateEndpointRequired",
+        "policyDefinitionName": "deny-privateendpoint-required-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('peRequiredEffect')]"
+          },
+          "resourceType": {
+            "value": "[parameters('resourceType')]"
+          },
+          "publicNetworkAccessField": {
+            "value": "[parameters('publicNetworkAccessField')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditPrivateEndpointDnsConfigured",
+        "policyDefinitionName": "audit-privateendpoint-dns-configured-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('dnsConfiguredEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditPrivateEndpointNsg",
+        "policyDefinitionName": "audit-privateendpoint-nsg-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('nsgEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "deny-storageaccount-shared-key-disabled-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Storage Account: Shared Key Access Disabled (RBAC Only)",
+    "description": "Denies deployment of Azure Storage Accounts with shared key access enabled. FedRAMP High requires access enforcement (AC-3) via RBAC. Shared key access provides root-level access to the entire Storage Account without granular authorization — RBAC-only access enforces least privilege and integrates with Entra ID audit logging.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Storage Account",
+      "nistControls": ["AC-3"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block Storage Accounts with shared key access. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "field": "Microsoft.Storage/storageAccounts/allowSharedKeyAccess",
+            "notEquals": false
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

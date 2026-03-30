@@ -1,0 +1,47 @@
+{
+  "name": "deny-bastion-sku-standard-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Bastion: Require Standard SKU",
+    "description": "Denies deployment of Azure Bastion hosts that do not use the Standard SKU. FedRAMP High requires boundary protection (SC-7) for administrative access. Standard SKU enables session recording, native client support, shareable links, and IP-based connection features required for privileged access management and audit trails.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Bastion",
+      "nistControls": ["SC-7"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block Bastion deployment without Standard SKU. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/bastionHosts"
+          },
+          {
+            "field": "Microsoft.Network/bastionHosts/sku.name",
+            "notEquals": "Standard"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "audit-expressroute-encryption-enabled-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] ExpressRoute: Audit MACsec Encryption on ExpressRoute Direct",
+    "description": "Audits that MACsec (802.1AE) encryption is enabled on ExpressRoute Direct circuits. FedRAMP High requires cryptographic protection of data in transit (SC-8) and use of FIPS-validated cryptographic mechanisms (SC-13). MACsec provides Layer 2 encryption between the customer edge and Microsoft edge routers, protecting all traffic traversing the ExpressRoute Direct physical ports.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "ExpressRoute",
+      "nistControls": ["SC-8", "SC-13"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": true,
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report non-compliance when MACsec encryption is not enabled on ExpressRoute Direct. Disabled: Do not evaluate. Note: MACsec is only available on ExpressRoute Direct — standard ExpressRoute circuits use IPsec via VPN Gateway for encryption."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/expressRoutePorts"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.Network/expressRoutePorts/links[*].macSecConfig.cipher",
+                "exists": false
+              },
+              {
+                "field": "Microsoft.Network/expressRoutePorts/links[*].macSecConfig.cipher",
+                "equals": ""
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

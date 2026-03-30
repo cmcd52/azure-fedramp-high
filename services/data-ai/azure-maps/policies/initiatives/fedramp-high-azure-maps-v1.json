@@ -1,0 +1,55 @@
+{
+  "name": "fedramp-high-azure-maps-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Maps Controls",
+    "description": "Policy initiative for Azure Maps FedRAMP High compliance. Bundles policies for managed identity authentication and CORS restrictions. Azure Maps has LIMITED policy enforcement options and does NOT support Private Endpoint — compensating controls (managed identity, CORS, IP restrictions, Front Door WAF) are required.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Maps",
+      "nistControls": ["IA-2", "AC-4"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "managedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Managed Identity Effect",
+          "description": "Effect for the Azure Maps managed identity policy."
+        }
+      },
+      "corsRestrictionsEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "CORS Restrictions Effect",
+          "description": "Effect for the Azure Maps CORS restrictions policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditMapsManagedIdentity",
+        "policyDefinitionName": "audit-maps-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('managedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditMapsCorsRestrictions",
+        "policyDefinitionName": "audit-maps-cors-restrictions-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('corsRestrictionsEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

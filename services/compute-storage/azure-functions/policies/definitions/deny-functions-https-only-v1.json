@@ -1,0 +1,52 @@
+{
+  "name": "deny-functions-https-only-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Functions: HTTPS Only Required",
+    "description": "Denies deployment of Azure Function Apps that do not enforce HTTPS-only access. FedRAMP High requires transmission confidentiality (SC-8). All client-to-function communication must be encrypted via HTTPS — HTTP access is prohibited to prevent cleartext data exposure including function keys and payloads.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Functions",
+      "nistControls": ["SC-8"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block non-HTTPS Function Apps. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Web/sites"
+          },
+          {
+            "field": "kind",
+            "contains": "functionapp"
+          },
+          {
+            "field": "Microsoft.Web/sites/httpsOnly",
+            "notEquals": true
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "audit-speech-managed-identity-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] AI Speech Service: Managed Identity Required",
+    "description": "Audits Azure AI Speech Service (Cognitive Services) accounts that do not have a managed identity configured. FedRAMP High requires identification and authentication (IA-2). Managed Identity eliminates API key management and enables Entra ID authentication with RBAC, conditional access policies, and centralized audit logging for speech processing operations.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "AI Speech Service",
+      "nistControls": ["IA-2"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report Speech Service accounts without managed identity. Deny: Block deployment. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.CognitiveServices/accounts"
+          },
+          {
+            "field": "Microsoft.CognitiveServices/accounts/kind",
+            "equals": "SpeechServices"
+          },
+          {
+            "field": "identity.type",
+            "notContains": "SystemAssigned"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

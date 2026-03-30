@@ -1,0 +1,55 @@
+{
+  "name": "fedramp-high-expressroute-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] ExpressRoute Controls",
+    "description": "Policy initiative for ExpressRoute FedRAMP High compliance. Bundles audit policies for MACsec encryption on ExpressRoute Direct and private peering enforcement. ExpressRoute provides dedicated private connectivity between on-premises networks and Azure — these policies verify encryption and peering configuration meet FedRAMP High boundary protection and cryptographic requirements.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "ExpressRoute",
+      "nistControls": ["SC-7", "SC-8", "SC-13"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "encryptionEnabledEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Encryption Enabled Effect",
+          "description": "Effect for the ExpressRoute MACsec encryption audit policy."
+        }
+      },
+      "privatePeeringEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Private Peering Effect",
+          "description": "Effect for the ExpressRoute private peering only audit policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditExpressRouteEncryption",
+        "policyDefinitionName": "audit-expressroute-encryption-enabled-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('encryptionEnabledEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditExpressRoutePrivatePeering",
+        "policyDefinitionName": "audit-expressroute-private-peering-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('privatePeeringEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

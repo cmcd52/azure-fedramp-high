@@ -1,0 +1,60 @@
+{
+  "name": "audit-openai-content-filtering-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure OpenAI: Content Filtering Must Be Enabled",
+    "description": "Audits Azure OpenAI (Cognitive Services) accounts to ensure content filtering is not bypassed. FedRAMP High requires information system monitoring (SI-4). Content filtering provides responsible AI guardrails against harmful content generation, prompt injection attacks, and data exfiltration via model outputs. Deployments must use content filtering at the default or stricter level.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure OpenAI",
+      "nistControls": ["SI-4"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report deployments with weakened content filtering. Deny: Block deployment. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.CognitiveServices/accounts/deployments"
+          },
+          {
+            "field": "Microsoft.CognitiveServices/accounts/deployments/sku.name",
+            "exists": true
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.CognitiveServices/accounts/deployments/properties.raiPolicyName",
+                "equals": ""
+              },
+              {
+                "field": "Microsoft.CognitiveServices/accounts/deployments/properties.raiPolicyName",
+                "equals": "Microsoft.Nil"
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

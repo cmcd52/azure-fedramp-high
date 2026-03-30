@@ -1,0 +1,71 @@
+{
+  "name": "audit-aifoundry-diagnostic-settings-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure AI Foundry: Diagnostic Settings Enabled",
+    "description": "Audits Azure AI Foundry Hub and Project resources that do not have diagnostic settings enabled. FedRAMP High requires audit generation (AU-12). All compute, model, and pipeline events must be forwarded to the centralized Log Analytics workspace for security monitoring and incident response.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure AI Foundry",
+      "nistControls": ["AU-12"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": ["AuditIfNotExists", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "AuditIfNotExists: Report AI Foundry resources without diagnostic settings. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.MachineLearningServices/workspaces"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.MachineLearningServices/workspaces/kind",
+                "equals": "Hub"
+              },
+              {
+                "field": "Microsoft.MachineLearningServices/workspaces/kind",
+                "equals": "Project"
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Insights/diagnosticSettings",
+          "existenceCondition": {
+            "allOf": [
+              {
+                "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+                "equals": "true"
+              },
+              {
+                "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
+                "exists": "true"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

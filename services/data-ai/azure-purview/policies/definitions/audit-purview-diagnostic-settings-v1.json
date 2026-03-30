@@ -1,0 +1,55 @@
+{
+  "name": "audit-purview-diagnostic-settings-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Purview: Diagnostic Settings Enabled",
+    "description": "Audits Azure Purview accounts that do not have diagnostic settings configured. FedRAMP High requires audit generation (AU-12). Purview diagnostic logs — including scan status events, data sensitivity events, and security events — must be forwarded to a centralized Log Analytics workspace for incident detection and compliance evidence.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Purview",
+      "nistControls": ["AU-12"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": ["AuditIfNotExists", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "AuditIfNotExists: Report Purview accounts without diagnostic settings. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Purview/accounts"
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Insights/diagnosticSettings",
+          "existenceCondition": {
+            "allOf": [
+              {
+                "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+                "equals": "true"
+              },
+              {
+                "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
+                "exists": "true"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

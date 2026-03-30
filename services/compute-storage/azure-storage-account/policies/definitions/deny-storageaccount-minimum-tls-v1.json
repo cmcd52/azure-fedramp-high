@@ -1,0 +1,49 @@
+{
+  "name": "deny-storageaccount-minimum-tls-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Storage Account: TLS 1.2 Minimum Required",
+    "description": "Denies deployment of Azure Storage Accounts with a minimum TLS version below 1.2. FedRAMP High requires transmission confidentiality (SC-8). TLS 1.0 and 1.1 have known vulnerabilities and are prohibited per NIST SP 800-52 Rev 2. Azure Storage uses FIPS 140-2 validated TLS implementation.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Storage Account",
+      "nistControls": ["SC-8"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": true,
+      "fips140CertRef": "Platform module",
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block Storage Accounts with TLS < 1.2. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "field": "Microsoft.Storage/storageAccounts/minimumTlsVersion",
+            "notEquals": "TLS1_2"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

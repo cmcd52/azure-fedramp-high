@@ -1,0 +1,58 @@
+{
+  "name": "audit-dnsresolver-vnet-link-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] DNS Private Resolver: Must Be Linked to Hub VNet",
+    "description": "Audits Azure DNS Private Resolver instances that are not deployed within the hub virtual network. FedRAMP High requires boundary protection (SC-7) and secure name/address resolution (SC-20). DNS Private Resolver must be integrated with the hub VNet to ensure all DNS queries are resolved within the trusted network boundary and not routed over public internet paths.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "DNS Private Resolver",
+      "nistControls": ["SC-7", "SC-20"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report non-compliance for resolvers not linked to hub VNet. Disabled: Do not evaluate."
+        }
+      },
+      "allowedVnetIds": {
+        "type": "Array",
+        "defaultValue": [],
+        "metadata": {
+          "displayName": "Allowed VNet Resource IDs",
+          "description": "List of hub VNet resource IDs that the DNS Private Resolver must be deployed into."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/dnsResolvers"
+          },
+          {
+            "not": {
+              "field": "Microsoft.Network/dnsResolvers/virtualNetwork.id",
+              "in": "[parameters('allowedVnetIds')]"
+            }
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

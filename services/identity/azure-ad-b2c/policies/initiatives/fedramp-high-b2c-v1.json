@@ -1,0 +1,73 @@
+{
+  "name": "fedramp-high-b2c-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure AD B2C Controls",
+    "description": "Policy initiative for Azure AD B2C FedRAMP High compliance. Bundles audit policies for token lifetime configuration, custom domain usage, and MFA enablement. Note: B2C compliance is primarily enforced through custom policies, user flow settings, and the Azure portal — not Azure Policy resource enforcement. These audit policies serve as a compliance reporting layer.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure AD B2C",
+      "nistControls": ["IA-2(1)", "IA-5", "IA-8", "SC-23"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "tokenLifetimeEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Token Lifetime Effect",
+          "description": "Effect for the B2C token lifetime audit policy."
+        }
+      },
+      "customDomainEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Custom Domain Effect",
+          "description": "Effect for the B2C custom domain audit policy."
+        }
+      },
+      "mfaEnabledEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "MFA Enabled Effect",
+          "description": "Effect for the B2C MFA enablement audit policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditB2cTokenLifetime",
+        "policyDefinitionName": "audit-b2c-token-lifetime-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('tokenLifetimeEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditB2cCustomDomain",
+        "policyDefinitionName": "audit-b2c-custom-domain-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('customDomainEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditB2cMfaEnabled",
+        "policyDefinitionName": "audit-b2c-mfa-enabled-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('mfaEnabledEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "deny-purview-public-access-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Purview: No Public Access",
+    "description": "Denies deployment of Azure Purview accounts with public network access enabled. FedRAMP High requires boundary protection (SC-7). Purview accounts governing federal data classifications must only be accessible via Private Endpoint — public network access is prohibited to prevent unauthorized metadata exposure and data catalog manipulation.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Purview",
+      "nistControls": ["SC-7"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block Purview accounts with public access. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Purview/accounts"
+          },
+          {
+            "field": "Microsoft.Purview/accounts/publicNetworkAccess",
+            "notEquals": "Disabled"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

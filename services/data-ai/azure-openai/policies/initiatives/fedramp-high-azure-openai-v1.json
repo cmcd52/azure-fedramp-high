@@ -1,0 +1,73 @@
+{
+  "name": "fedramp-high-azure-openai-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure OpenAI Controls",
+    "description": "Policy initiative for Azure OpenAI FedRAMP High compliance. Bundles policies for public access prevention, managed identity authentication, and content filtering enforcement. Azure OpenAI processing federal data must enforce network isolation, identity-based access, and responsible AI guardrails.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure OpenAI",
+      "nistControls": ["SC-7", "IA-2", "SI-4"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "publicAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Public Access Effect",
+          "description": "Effect for the Azure OpenAI public access policy."
+        }
+      },
+      "managedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Managed Identity Effect",
+          "description": "Effect for the Azure OpenAI managed identity policy."
+        }
+      },
+      "contentFilteringEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Content Filtering Effect",
+          "description": "Effect for the Azure OpenAI content filtering policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "denyOpenAIPublicAccess",
+        "policyDefinitionName": "deny-openai-public-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('publicAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditOpenAIManagedIdentity",
+        "policyDefinitionName": "audit-openai-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('managedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditOpenAIContentFiltering",
+        "policyDefinitionName": "audit-openai-content-filtering-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('contentFilteringEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "fedramp-high-private-dns-zone-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Private DNS Zone Controls",
+    "description": "Policy initiative for Azure Private DNS Zone FedRAMP High compliance. Bundles policies for VNet link enforcement and public IP record prevention. Private DNS Zones provide internal name resolution for Private Endpoints and internal services — these policies ensure zones are properly integrated with the hub VNet and only resolve to private IP addresses.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Private DNS Zone",
+      "nistControls": ["SC-7", "SC-20"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "vnetLinkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "VNet Link Effect",
+          "description": "Effect for the Private DNS Zone VNet link policy."
+        }
+      },
+      "publicRecordsEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Public Records Effect",
+          "description": "Effect for the Private DNS Zone public records policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditPrivateDnsZonesVnetLink",
+        "policyDefinitionName": "audit-privatednszones-vnet-link-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('vnetLinkEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyPrivateDnsZonesPublicRecords",
+        "policyDefinitionName": "deny-privatednszones-public-records-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('publicRecordsEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

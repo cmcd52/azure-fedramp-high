@@ -1,0 +1,49 @@
+{
+  "name": "deny-storageaccount-cmk-encryption-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Storage Account: Customer-Managed Key Required (Production)",
+    "description": "Denies deployment of Azure Storage Accounts without customer-managed key (CMK) encryption in production. FedRAMP High requires cryptographic protection (SC-13) and protection of information at rest (SC-28). CMK provides organization-controlled key lifecycle management via Azure Key Vault with FIPS 140-2 validated HSM backing.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Storage Account",
+      "nistControls": ["SC-28", "SC-13"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": true,
+      "fips140CertRef": "Key Vault HSM module",
+      "stigFindingId": "No STIG available",
+      "environment": "production"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block Storage Accounts without CMK in production. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "field": "Microsoft.Storage/storageAccounts/encryption.keySource",
+            "notEquals": "Microsoft.Keyvault"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

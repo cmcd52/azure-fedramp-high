@@ -1,0 +1,56 @@
+{
+  "name": "audit-appinsights-workspace-based-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Application Insights: Must Use Workspace-Based Mode",
+    "description": "Audits Application Insights components that are not workspace-based (classic mode). FedRAMP High AU-6 requires centralized audit review, analysis, and reporting. Workspace-based Application Insights forwards all telemetry to a Log Analytics workspace, enabling cross-service correlation, unified retention policies, and centralized access control. Classic Application Insights uses isolated storage that cannot be queried alongside other audit data.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Application Insights",
+      "nistControls": ["AU-6"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report classic (non-workspace-based) Application Insights components. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Insights/components"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.Insights/components/WorkspaceResourceId",
+                "exists": false
+              },
+              {
+                "field": "Microsoft.Insights/components/WorkspaceResourceId",
+                "equals": ""
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

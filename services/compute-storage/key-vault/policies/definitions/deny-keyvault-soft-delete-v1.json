@@ -1,0 +1,48 @@
+{
+  "name": "deny-keyvault-soft-delete-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Key Vault: Soft-Delete Required",
+    "description": "Denies deployment of Azure Key Vaults without soft-delete enabled. FedRAMP High requires information system backup (CP-9). Soft-delete ensures cryptographic keys, secrets, and certificates are recoverable after deletion — preventing permanent loss of critical cryptographic material that protects federal data.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Key Vault",
+      "nistControls": ["CP-9"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block Key Vaults without soft-delete. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.KeyVault/vaults"
+          },
+          {
+            "field": "Microsoft.KeyVault/vaults/enableSoftDelete",
+            "notEquals": true
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

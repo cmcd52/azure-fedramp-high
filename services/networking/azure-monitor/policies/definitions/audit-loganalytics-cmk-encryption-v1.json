@@ -1,0 +1,56 @@
+{
+  "name": "audit-loganalytics-cmk-encryption-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Monitor: Log Analytics Workspace CMK Encryption",
+    "description": "Audits Log Analytics workspaces that do not have customer-managed key (CMK) encryption configured. FedRAMP High SC-28 requires protection of information at rest. CMK encryption provides organization-controlled key management for workspace data, enabling key rotation, revocation, and BYOK compliance for sensitive audit data.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Monitor",
+      "nistControls": ["SC-28"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": true,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report workspaces without CMK encryption. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.OperationalInsights/workspaces"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.OperationalInsights/workspaces/features.clusterResourceId",
+                "exists": false
+              },
+              {
+                "field": "Microsoft.OperationalInsights/workspaces/features.clusterResourceId",
+                "equals": ""
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

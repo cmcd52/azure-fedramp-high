@@ -1,0 +1,52 @@
+{
+  "name": "deny-openai-public-access-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure OpenAI: No Public Network Access",
+    "description": "Denies deployment of Azure OpenAI (Cognitive Services) accounts with public network access enabled. FedRAMP High requires boundary protection (SC-7). Azure OpenAI endpoints processing federal data must only be accessible via Private Endpoint — public network access is prohibited to prevent unauthorized data exposure and prompt injection from untrusted networks.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure OpenAI",
+      "nistControls": ["SC-7"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block Azure OpenAI with public access. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.CognitiveServices/accounts"
+          },
+          {
+            "field": "Microsoft.CognitiveServices/accounts/kind",
+            "equals": "OpenAI"
+          },
+          {
+            "field": "Microsoft.CognitiveServices/accounts/publicNetworkAccess",
+            "notEquals": "Disabled"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

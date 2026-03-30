@@ -1,0 +1,63 @@
+{
+  "name": "deny-privateendpoint-required-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Private Endpoint: Services Must Use Private Endpoints",
+    "description": "Denies deployment of Azure services that support Private Endpoints without a Private Endpoint configuration. FedRAMP High requires boundary protection (SC-7) — all supported services must use Private Endpoints to ensure traffic traverses the Microsoft backbone and private VNet instead of public internet paths. This is a generic template policy; service-specific Private Endpoint enforcement policies are referenced in each service's built-in-references.md.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Private Endpoint",
+      "nistControls": ["SC-7"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block services without Private Endpoint. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      },
+      "resourceType": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Resource Type",
+          "description": "The Azure resource type to enforce Private Endpoint on (e.g., 'Microsoft.Storage/storageAccounts')."
+        }
+      },
+      "publicNetworkAccessField": {
+        "type": "String",
+        "defaultValue": "publicNetworkAccess",
+        "metadata": {
+          "displayName": "Public Network Access Field",
+          "description": "The field name for public network access on the target resource type."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "[parameters('resourceType')]"
+          },
+          {
+            "field": "[concat(parameters('resourceType'), '/', parameters('publicNetworkAccessField'))]",
+            "notEquals": "Disabled"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

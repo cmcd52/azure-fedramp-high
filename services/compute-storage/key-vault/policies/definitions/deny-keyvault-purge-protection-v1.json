@@ -1,0 +1,48 @@
+{
+  "name": "deny-keyvault-purge-protection-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Key Vault: Purge Protection Required",
+    "description": "Denies deployment of Azure Key Vaults without purge protection enabled. FedRAMP High requires information system backup (CP-9). Purge protection prevents permanent deletion of vaults and their objects during the soft-delete retention period — even by privileged administrators — ensuring cryptographic material cannot be irrecoverably destroyed.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Key Vault",
+      "nistControls": ["CP-9"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block Key Vaults without purge protection. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.KeyVault/vaults"
+          },
+          {
+            "field": "Microsoft.KeyVault/vaults/enablePurgeProtection",
+            "notEquals": true
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

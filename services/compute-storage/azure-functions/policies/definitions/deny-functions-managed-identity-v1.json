@@ -1,0 +1,56 @@
+{
+  "name": "deny-functions-managed-identity-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Functions: Managed Identity Required",
+    "description": "Denies deployment of Azure Function Apps without a managed identity (system-assigned or user-assigned). FedRAMP High requires organizational users to be uniquely identified and authenticated (IA-2). Managed identities eliminate credential storage in code and enable Azure RBAC-based service-to-service authentication for function bindings and triggers.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Functions",
+      "nistControls": ["IA-2"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block Function Apps without managed identity. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Web/sites"
+          },
+          {
+            "field": "kind",
+            "contains": "functionapp"
+          },
+          {
+            "field": "identity.type",
+            "notContains": "SystemAssigned"
+          },
+          {
+            "field": "identity.type",
+            "notContains": "UserAssigned"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

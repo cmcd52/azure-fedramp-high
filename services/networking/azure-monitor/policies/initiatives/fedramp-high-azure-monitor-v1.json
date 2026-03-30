@@ -1,0 +1,94 @@
+{
+  "name": "fedramp-high-azure-monitor-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Monitor Controls",
+    "description": "Policy initiative for Azure Monitor and Log Analytics FedRAMP High compliance. Bundles policies for workspace retention enforcement, CMK encryption, and Activity Log diagnostic settings. Azure Monitor is the centralized audit and monitoring platform — its own compliance posture is critical to the integrity of the entire FedRAMP boundary.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Monitor",
+      "nistControls": ["AU-11", "AU-12", "SC-28"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "retentionEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Retention Minimum Effect",
+          "description": "Effect for the Log Analytics workspace retention minimum policy."
+        }
+      },
+      "minimumRetentionDays": {
+        "type": "Integer",
+        "defaultValue": 365,
+        "metadata": {
+          "displayName": "Minimum Retention Days",
+          "description": "Minimum workspace retention in days."
+        }
+      },
+      "cmkEncryptionEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "CMK Encryption Effect",
+          "description": "Effect for the Log Analytics workspace CMK encryption policy."
+        }
+      },
+      "diagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": ["AuditIfNotExists", "Disabled"],
+        "metadata": {
+          "displayName": "Diagnostic Settings Effect",
+          "description": "Effect for the Activity Log diagnostic settings policy."
+        }
+      },
+      "logAnalyticsWorkspaceId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Log Analytics Workspace ID",
+          "description": "The resource ID of the Log Analytics workspace for Activity Log diagnostic settings."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "denyLogAnalyticsRetentionMinimum",
+        "policyDefinitionName": "deny-loganalytics-retention-minimum-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('retentionEffect')]"
+          },
+          "minimumRetentionDays": {
+            "value": "[parameters('minimumRetentionDays')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditLogAnalyticsCmkEncryption",
+        "policyDefinitionName": "audit-loganalytics-cmk-encryption-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('cmkEncryptionEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditMonitorDiagnosticSettings",
+        "policyDefinitionName": "audit-monitor-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('diagnosticSettingsEffect')]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[parameters('logAnalyticsWorkspaceId')]"
+          }
+        }
+      }
+    ]
+  }
+}

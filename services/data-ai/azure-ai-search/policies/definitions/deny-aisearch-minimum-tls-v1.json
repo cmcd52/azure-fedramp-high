@@ -1,0 +1,69 @@
+{
+  "name": "deny-aisearch-minimum-tls-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure AI Search: TLS 1.2 Minimum Required",
+    "description": "Denies deployment of Azure AI Search services with TLS version below 1.2. FedRAMP High requires transmission confidentiality and integrity (SC-8). TLS 1.2 is the minimum version permitted per NIST SP 800-52 Rev 2 for protecting federal data in transit.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure AI Search",
+      "nistControls": ["SC-8"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block AI Search with TLS below 1.2. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      },
+      "minimumTlsVersion": {
+        "type": "String",
+        "defaultValue": "1.2",
+        "allowedValues": ["1.0", "1.1", "1.2"],
+        "metadata": {
+          "displayName": "Minimum TLS Version",
+          "description": "The minimum TLS version required. Default: 1.2."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Search/searchServices"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.Search/searchServices/encryptionWithCmk.enforcement",
+                "exists": true
+              },
+              {
+                "field": "type",
+                "equals": "Microsoft.Search/searchServices"
+              }
+            ]
+          },
+          {
+            "field": "Microsoft.Search/searchServices/minTlsVersion",
+            "less": "[parameters('minimumTlsVersion')]"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "audit-purview-managed-identity-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Purview: Managed Identity Required",
+    "description": "Audits Azure Purview accounts that do not have a managed identity configured. FedRAMP High requires identification and authentication (IA-2). Managed Identity enables credential-free scanning of data sources and eliminates the need for stored credentials, reducing the attack surface for data governance operations.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Purview",
+      "nistControls": ["IA-2"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report Purview accounts without managed identity. Deny: Block deployment. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Purview/accounts"
+          },
+          {
+            "field": "identity.type",
+            "notContains": "SystemAssigned"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

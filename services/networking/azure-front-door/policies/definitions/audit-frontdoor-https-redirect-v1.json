@@ -1,0 +1,47 @@
+{
+  "name": "audit-frontdoor-https-redirect-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Front Door: Audit HTTP to HTTPS Redirect",
+    "description": "Audits that Azure Front Door routes are configured to redirect HTTP traffic to HTTPS. FedRAMP High requires transmission confidentiality and integrity (SC-8) for all web traffic. HTTP-to-HTTPS redirect ensures clients are automatically redirected to encrypted connections.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Front Door",
+      "nistControls": ["SC-8"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report non-compliance when HTTP-to-HTTPS redirect is not configured. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Cdn/profiles/afdEndpoints/routes"
+          },
+          {
+            "field": "Microsoft.Cdn/profiles/afdEndpoints/routes/httpsRedirect",
+            "notEquals": "Enabled"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

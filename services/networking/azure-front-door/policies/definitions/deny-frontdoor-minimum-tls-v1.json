@@ -1,0 +1,47 @@
+{
+  "name": "deny-frontdoor-minimum-tls-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Front Door: Require TLS 1.2 Minimum",
+    "description": "Denies Azure Front Door custom domain configurations that do not enforce TLS 1.2 as the minimum version. FedRAMP High requires transmission confidentiality (SC-8) and FIPS-validated cryptographic mechanisms (SC-13). TLS 1.0 and 1.1 have known vulnerabilities and are prohibited in FedRAMP High environments.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Front Door",
+      "nistControls": ["SC-8", "SC-13"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": true,
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block Front Door custom domain creation with TLS version below 1.2. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Cdn/profiles/customDomains"
+          },
+          {
+            "field": "Microsoft.Cdn/profiles/customDomains/tlsSettings.minimumTlsVersion",
+            "notEquals": "TLS12"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

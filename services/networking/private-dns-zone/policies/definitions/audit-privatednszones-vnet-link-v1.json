@@ -1,0 +1,50 @@
+{
+  "name": "audit-privatednszones-vnet-link-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Private DNS Zone: Must Be Linked to Hub VNet",
+    "description": "Audits Azure Private DNS Zones that are not linked to the hub virtual network. FedRAMP High requires boundary protection (SC-7) to ensure DNS resolution for private endpoints and internal services occurs within the trusted network boundary. All Private DNS Zones must have a VNet link to the hub VNet for consistent name resolution across the hub-spoke topology.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Private DNS Zone",
+      "nistControls": ["SC-7"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report non-compliance for Private DNS Zones without VNet link. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/privateDnsZones"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Network/privateDnsZones/virtualNetworkLinks[*]"
+            },
+            "equals": 0
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

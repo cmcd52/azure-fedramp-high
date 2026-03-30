@@ -1,0 +1,48 @@
+{
+  "name": "audit-b2c-token-lifetime-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure AD B2C: Audit Token Lifetime Configuration",
+    "description": "Audits that Azure AD B2C token lifetime settings conform to organizational policy. Access tokens should not exceed 1 hour and refresh tokens should not exceed 24 hours for session management compliance. FedRAMP High requires session controls per SC-23 and credential management per IA-5.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure AD B2C",
+      "nistControls": ["IA-5", "SC-23"],
+      "frameworks": ["FedRAMP High", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report non-compliance. Disabled: Do not evaluate. Note: B2C token lifetime is configured via custom policies or user flows, not Azure resource policy. This audit policy checks for the existence of a B2C directory resource."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.AzureActiveDirectory/b2cDirectories"
+          },
+          {
+            "field": "tags['token-lifetime-reviewed']",
+            "notEquals": "true"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

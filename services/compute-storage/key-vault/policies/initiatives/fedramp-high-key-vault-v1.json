@@ -1,0 +1,91 @@
+{
+  "name": "fedramp-high-key-vault-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Key Vault Controls",
+    "description": "Policy initiative for Azure Key Vault FedRAMP High compliance. Bundles policies for soft-delete, purge protection, RBAC authorization, and key expiration enforcement. Key Vault is critical infrastructure for cryptographic key management — these policies ensure defense-in-depth: recoverability, least privilege access, and key lifecycle governance.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Key Vault",
+      "nistControls": ["SC-12", "AC-3", "AC-6", "CP-9"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "softDeleteEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Soft-Delete Effect",
+          "description": "Effect for the Key Vault soft-delete policy."
+        }
+      },
+      "purgeProtectionEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Purge Protection Effect",
+          "description": "Effect for the Key Vault purge protection policy."
+        }
+      },
+      "rbacAuthEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "RBAC Authorization Effect",
+          "description": "Effect for the Key Vault RBAC authorization policy."
+        }
+      },
+      "keyExpirationEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Key Expiration Effect",
+          "description": "Effect for the Key Vault key expiration policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "denyKeyVaultSoftDelete",
+        "policyDefinitionName": "deny-keyvault-soft-delete-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('softDeleteEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyKeyVaultPurgeProtection",
+        "policyDefinitionName": "deny-keyvault-purge-protection-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('purgeProtectionEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyKeyVaultRbacAuth",
+        "policyDefinitionName": "deny-keyvault-rbac-auth-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('rbacAuthEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditKeyVaultKeyExpiration",
+        "policyDefinitionName": "audit-keyvault-key-expiration-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('keyExpirationEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "audit-b2c-custom-domain-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure AD B2C: Audit Custom Domain Configuration",
+    "description": "Audits that Azure AD B2C is configured with a custom domain rather than the default .b2clogin.com domain. Custom domains reduce phishing risk by presenting a recognizable organization-owned domain to end users during authentication flows. NIST IA-8 requires identification and authentication of non-organizational users through trusted channels.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure AD B2C",
+      "nistControls": ["IA-8"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report non-compliance when custom domain tag is missing. Disabled: Do not evaluate. Note: B2C custom domain configuration is managed via the Azure portal and DNS, not directly enforceable via Azure Policy."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.AzureActiveDirectory/b2cDirectories"
+          },
+          {
+            "field": "tags['custom-domain-configured']",
+            "notEquals": "true"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

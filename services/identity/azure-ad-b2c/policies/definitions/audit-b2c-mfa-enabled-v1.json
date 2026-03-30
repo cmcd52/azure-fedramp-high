@@ -1,0 +1,48 @@
+{
+  "name": "audit-b2c-mfa-enabled-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure AD B2C: Audit MFA Enablement in User Flows",
+    "description": "Audits that multi-factor authentication (MFA) is enabled in Azure AD B2C user flows and custom policies. FedRAMP High requires MFA for all interactive authentication per IA-2(1). B2C MFA is configured through user flow settings or custom policy XML — this audit policy verifies compliance tagging on the B2C directory resource.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure AD B2C",
+      "nistControls": ["IA-2(1)"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report non-compliance when MFA enablement tag is missing. Disabled: Do not evaluate. Note: B2C MFA enforcement is managed via user flow settings or custom policy XML, not Azure resource policy. Deny effect is not applicable."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.AzureActiveDirectory/b2cDirectories"
+          },
+          {
+            "field": "tags['mfa-enabled']",
+            "notEquals": "true"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

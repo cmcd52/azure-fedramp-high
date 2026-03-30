@@ -1,0 +1,78 @@
+{
+  "name": "deny-privatednszones-public-records-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Private DNS Zone: No A Records Pointing to Public IPs",
+    "description": "Denies creation of A records in Private DNS Zones that point to public IP addresses. FedRAMP High requires boundary protection (SC-7) — Private DNS Zones must resolve to private IP addresses only. A records with public IP addresses in private zones indicate misconfiguration that could leak internal DNS resolution to public endpoints, bypassing Private Endpoint isolation.",
+    "mode": "All",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Private DNS Zone",
+      "nistControls": ["SC-7"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block A records with public IPs. Audit: Report non-compliance only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/privateDnsZones/A"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Network/privateDnsZones/A/aRecords[*]",
+              "where": {
+                "anyOf": [
+                  {
+                    "field": "Microsoft.Network/privateDnsZones/A/aRecords[*].ipv4Address",
+                    "notMatch": "10.#.#.#"
+                  },
+                  {
+                    "field": "Microsoft.Network/privateDnsZones/A/aRecords[*].ipv4Address",
+                    "notMatch": "172.1#.#.#"
+                  },
+                  {
+                    "field": "Microsoft.Network/privateDnsZones/A/aRecords[*].ipv4Address",
+                    "notMatch": "172.2#.#.#"
+                  },
+                  {
+                    "field": "Microsoft.Network/privateDnsZones/A/aRecords[*].ipv4Address",
+                    "notMatch": "172.30.#.#"
+                  },
+                  {
+                    "field": "Microsoft.Network/privateDnsZones/A/aRecords[*].ipv4Address",
+                    "notMatch": "172.31.#.#"
+                  },
+                  {
+                    "field": "Microsoft.Network/privateDnsZones/A/aRecords[*].ipv4Address",
+                    "notMatch": "192.168.#.#"
+                  }
+                ]
+              }
+            },
+            "greater": 0
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

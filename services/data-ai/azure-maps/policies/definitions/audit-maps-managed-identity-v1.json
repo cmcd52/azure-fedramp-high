@@ -1,0 +1,48 @@
+{
+  "name": "audit-maps-managed-identity-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Maps: Managed Identity Preferred Over Shared Key",
+    "description": "Audits Azure Maps accounts that do not have a managed identity configured. FedRAMP High requires identification and authentication (IA-2). Managed Identity with Entra ID RBAC is preferred over shared key authentication to enable centralized identity governance, conditional access policies, and audit logging of caller identity.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Maps",
+      "nistControls": ["IA-2"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report Azure Maps accounts without managed identity. Deny: Block deployment. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Maps/accounts"
+          },
+          {
+            "field": "identity.type",
+            "notContains": "SystemAssigned"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

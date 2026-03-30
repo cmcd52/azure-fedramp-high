@@ -1,0 +1,91 @@
+{
+  "name": "fedramp-high-vms-for-dns-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] VMs for DNS Controls",
+    "description": "Policy initiative for DNS VM FedRAMP High compliance. Bundles policies for disk encryption, Guest Configuration extension, diagnostic settings, and public IP prohibition. DNS VMs are critical infrastructure requiring defense-in-depth: encryption at rest, continuous STIG compliance assessment, comprehensive logging, and strict network isolation.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "VMs for DNS",
+      "nistControls": ["SC-7", "SC-28", "CM-6", "AU-12"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "diskEncryptionEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Disk Encryption Effect",
+          "description": "Effect for the VM disk encryption policy."
+        }
+      },
+      "guestConfigurationEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Guest Configuration Effect",
+          "description": "Effect for the VM Guest Configuration extension policy."
+        }
+      },
+      "diagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Diagnostic Settings Effect",
+          "description": "Effect for the VM diagnostic settings policy."
+        }
+      },
+      "publicIpEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Public IP Effect",
+          "description": "Effect for the VM public IP prohibition policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "denyVmDiskEncryption",
+        "policyDefinitionName": "deny-vm-disk-encryption-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('diskEncryptionEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditVmGuestConfiguration",
+        "policyDefinitionName": "audit-vm-guest-configuration-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('guestConfigurationEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditVmDiagnosticSettings",
+        "policyDefinitionName": "audit-vm-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('diagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyVmPublicIp",
+        "policyDefinitionName": "deny-vm-public-ip-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('publicIpEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "fedramp-high-azure-document-intelligence-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Document Intelligence Controls",
+    "description": "Policy initiative for Azure Document Intelligence FedRAMP High compliance. Bundles policies for public access prevention and managed identity authentication. Document Intelligence processing federal documents must enforce network isolation and identity-based access to protect PII and sensitive data in documents.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Document Intelligence",
+      "nistControls": ["SC-7", "IA-2"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "publicAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Public Access Effect",
+          "description": "Effect for the Azure Document Intelligence public access policy."
+        }
+      },
+      "managedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "metadata": {
+          "displayName": "Managed Identity Effect",
+          "description": "Effect for the Azure Document Intelligence managed identity policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "denyDocIntelPublicAccess",
+        "policyDefinitionName": "deny-docintel-public-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('publicAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditDocIntelManagedIdentity",
+        "policyDefinitionName": "audit-docintel-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('managedIdentityEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

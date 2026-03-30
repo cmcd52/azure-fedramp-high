@@ -1,0 +1,91 @@
+{
+  "name": "fedramp-high-app-service-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] App Service Controls",
+    "description": "Policy initiative for Azure App Service FedRAMP High compliance. Bundles policies for HTTPS enforcement, TLS 1.2 minimum, managed identity requirement, and diagnostic settings. App Services hosting federal workloads must enforce encryption in transit, strong authentication, and comprehensive audit logging.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "App Service",
+      "nistControls": ["SC-8", "SC-13", "IA-2", "AU-12"],
+      "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]
+    },
+    "parameters": {
+      "httpsOnlyEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "HTTPS Only Effect",
+          "description": "Effect for the App Service HTTPS-only policy."
+        }
+      },
+      "minimumTlsEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Minimum TLS Effect",
+          "description": "Effect for the App Service minimum TLS version policy."
+        }
+      },
+      "managedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": ["Deny", "Audit", "Disabled"],
+        "metadata": {
+          "displayName": "Managed Identity Effect",
+          "description": "Effect for the App Service managed identity policy."
+        }
+      },
+      "diagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": ["AuditIfNotExists", "Disabled"],
+        "metadata": {
+          "displayName": "Diagnostic Settings Effect",
+          "description": "Effect for the App Service diagnostic settings policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "denyAppServiceHttpsOnly",
+        "policyDefinitionName": "deny-appservice-https-only-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('httpsOnlyEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyAppServiceMinimumTls",
+        "policyDefinitionName": "deny-appservice-minimum-tls-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('minimumTlsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyAppServiceManagedIdentity",
+        "policyDefinitionName": "deny-appservice-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('managedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditAppServiceDiagnosticSettings",
+        "policyDefinitionName": "audit-appservice-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('diagnosticSettingsEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}
