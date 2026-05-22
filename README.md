@@ -40,7 +40,6 @@ This repository addresses **Azure IaaS and PaaS services** deployed in **Azure C
 - **Azure Government** — all configurations target Azure Commercial only
 - **SaaS identity platforms as standalone service deliverables** — Entra ID and Microsoft Intune are SaaS services without Azure ARM resource types and do not receive their own service directories. However, Azure services depend on Entra ID features (Conditional Access, MFA, PIM, RBAC, B2B guest access) for access control — each in-scope service's security control baseline documents how that service consumes Entra ID identity features as Azure tenant configuration, not Entra ID service administration.
 - **Microsoft 365** — GCC, GCC High, and all M365 workloads are excluded
-- **Customer-specific data** — all configurations use anonymized, generic identifiers
 
 ### Customer Responsibility
 
