@@ -19,7 +19,7 @@ Every custom policy definition MUST conform to this schema. Built-in policies ar
     "metadata": {
       "version": "1.0.0",
       "category": "FedRAMP High",
-      "service": "{Service name from azure-services-reference.md}",
+      "service": "{GA Azure Commercial service name; must be covered or recorded in docs/azure-service-exclusions.md}",
       "nistControls": ["SC-8", "SC-13"],
       "frameworks": ["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"],
       "severity": "High | Medium | Low",
@@ -97,6 +97,6 @@ Every custom policy definition MUST include ALL of these metadata fields:
 - `nistControls` — at least one NIST 800-53 Rev 5 control ID
 - `frameworks` — at least one compliance framework
 - `severity` — High, Medium, or Low
-- `service` — must match a service in azure-services-reference.md
+- `service` — must identify a GA Azure Commercial service that is either covered by deliverables or recorded in `docs/azure-service-exclusions.md`
 - `fipsApplicable` — boolean (required for any encryption-related policy)
 - `environment` — scope applicability

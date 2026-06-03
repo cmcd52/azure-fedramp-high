@@ -1,0 +1,117 @@
+{
+  "name": "fedramp-high-logic-apps-standard-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Logic Apps Standard Controls",
+    "description": "Policy initiative for Logic Apps Standard FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Logic Apps Standard",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-8",
+        "SC-13",
+        "IA-2",
+        "AC-3"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditLogicAppsStandardDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Logic Apps Standard: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Logic Apps Standard: Diagnostic Settings Enabled policy."
+        }
+      },
+      "denyLogicAppsStandardMinimumTlsEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Logic Apps Standard: Minimum TLS 1.2 Effect",
+          "description": "Effect for the [FedRAMP High] Logic Apps Standard: Minimum TLS 1.2 policy."
+        }
+      },
+      "denyLogicAppsStandardHttpsOnlyEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Logic Apps Standard: HTTPS Only Required Effect",
+          "description": "Effect for the [FedRAMP High] Logic Apps Standard: HTTPS Only Required policy."
+        }
+      },
+      "auditLogicAppsStandardManagedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Logic Apps Standard: Managed Identity Required Effect",
+          "description": "Effect for the [FedRAMP High] Logic Apps Standard: Managed Identity Required policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditLogicAppsStandardDiagnosticSettings",
+        "policyDefinitionName": "audit-logic-apps-standard-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditLogicAppsStandardDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyLogicAppsStandardMinimumTls",
+        "policyDefinitionName": "deny-logic-apps-standard-minimum-tls-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyLogicAppsStandardMinimumTlsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyLogicAppsStandardHttpsOnly",
+        "policyDefinitionName": "deny-logic-apps-standard-https-only-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyLogicAppsStandardHttpsOnlyEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditLogicAppsStandardManagedIdentity",
+        "policyDefinitionName": "audit-logic-apps-standard-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditLogicAppsStandardManagedIdentityEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

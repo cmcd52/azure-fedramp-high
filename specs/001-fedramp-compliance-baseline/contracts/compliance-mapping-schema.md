@@ -14,7 +14,7 @@ Each row in the compliance mapping index MUST contain these fields:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `service` | string | Yes | Service name from azure-services-reference.md |
+| `service` | string | Yes | Azure service name. MUST be a GA Azure Commercial service that is either covered by deliverables (in `services/<group>/<service>/`) or recorded in `docs/azure-service-exclusions.md`. |
 | `serviceGroup` | enum | Yes | `identity`, `networking`, `compute-storage`, `data-ai` |
 | `configurationSetting` | string | Yes | Specific setting (e.g., "Encryption at rest with CMK") |
 | `artifactType` | enum | Yes | `policy`, `terraform`, `control-baseline`, `logging` |
@@ -65,7 +65,7 @@ The index MUST support filtering by:
 ## Completeness Validation
 
 The index is complete when:
-- Every service in azure-services-reference.md has at least one entry per applicable artifact type
+- Every covered (non-excluded) GA Azure Commercial service has at least one entry per applicable artifact type
 - Every NIST 800-53 Rev 5 High baseline control (per NIST SP 800-53B) maps to at least one service configuration
 - Every framework listed in the constitution's regulatory hierarchy has at least one index entry
 - Every encryption entry has a `fips140CertRef` value
@@ -74,6 +74,6 @@ The index is complete when:
 ## Cross-Reference Integrity
 
 - Every `artifactPath` MUST point to an existing file in the repository
-- Every `service` value MUST match an entry in azure-services-reference.md
+- Every `service` value MUST identify a GA Azure Commercial service that is either covered by deliverables or recorded in `docs/azure-service-exclusions.md`
 - Every `nist80053Controls` value MUST be a valid NIST 800-53 Rev 5 control identifier
 - Every `sourceUrl` MUST be a working URL to authoritative documentation (Microsoft Learn, NIST, DISA, etc.)

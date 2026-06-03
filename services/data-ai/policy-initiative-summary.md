@@ -74,3 +74,30 @@ Most Cognitive Services / AI services follow a 3-policy pattern (OpenAI, AI Sear
 ---
 
 *Data & AI Services — Azure Policy compliance artifacts.*
+
+
+## Wave 2 (Pending Approval)
+
+_Generated 2026-04-28 by `scripts/wave2/generate.py`. Each row is **** per FedRAMP High compliance baseline._
+
+| Initiative | Service | NIST Families | Path |
+|---|---|---|---|
+| `fedramp-high-ai-services-umbrella-v1` | Azure AI Services (Umbrella) | AC, SC, AU | [policies/](./ai-services-umbrella/policies/) |
+| `fedramp-high-analysis-services-v1` | Azure Analysis Services | AC, SC, AU | [policies/](./analysis-services/policies/) |
+| `fedramp-high-cosmos-db-v1` | Azure Cosmos DB | AC, SC, AU, IR, CP | [policies/](./cosmos-db/policies/) |
+| `fedramp-high-data-factory-v1` | Azure Data Factory | AC, SC, AU | [policies/](./data-factory/policies/) |
+| `fedramp-high-data-share-v1` | Azure Data Share | AC, AU | [policies/](./data-share/policies/) |
+| `fedramp-high-databricks-v1` | Azure Databricks | AC, SC, AU | [policies/](./databricks/policies/) |
+| `fedramp-high-fabric-v1` | Microsoft Fabric | AC, AU | [policies/](./fabric/policies/) |
+| `fedramp-high-hdinsight-v1` | Azure HDInsight | AC, SC, AU | [policies/](./hdinsight/policies/) |
+| `fedramp-high-machine-learning-v1` | Azure Machine Learning | AC, SC, AU | [policies/](./machine-learning/policies/) |
+| `fedramp-high-mysql-flexible-v1` | Azure Database for MySQL Flexible Server | AC, SC, AU, IR | [policies/](./mysql-flexible/policies/) |
+| `fedramp-high-postgresql-flexible-v1` | Azure Database for PostgreSQL Flexible Server | AC, SC, AU, IR | [policies/](./postgresql-flexible/policies/) |
+| `fedramp-high-powerbi-embedded-v1` | Power BI Embedded | AC, AU | [policies/](./powerbi-embedded/policies/) |
+| `fedramp-high-redis-cache-v1` | Azure Cache for Redis | AC, SC, AU | [policies/](./redis-cache/policies/) |
+| `fedramp-high-redis-enterprise-v1` | Azure Cache for Redis Enterprise | AC, SC, AU | [policies/](./redis-enterprise/policies/) |
+| `fedramp-high-sql-database-v1` | Azure SQL Database | AC, SC, AU, IR | [policies/](./sql-database/policies/) |
+| `fedramp-high-sql-managed-instance-v1` | Azure SQL Managed Instance | AC, SC, AU, IR | [policies/](./sql-managed-instance/policies/) |
+| `fedramp-high-sql-server-logical-v1` | Azure SQL Server (Logical) | AC, SC, AU, IA | [policies/](./sql-server-logical/policies/) |
+| `fedramp-high-stream-analytics-v1` | Azure Stream Analytics | AC, SC, AU | [policies/](./stream-analytics/policies/) |
+| `fedramp-high-synapse-v1` | Azure Synapse Analytics | AC, SC, AU, IR | [policies/](./synapse/policies/) |

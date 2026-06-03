@@ -3,7 +3,7 @@
 ## Executive Summary
 
 **Date**: 2026-06-04  
-**Scope**: 23 Azure services listed in `azure-services-reference.md` v3.0.0  
+**Scope**: 23 Wave 1 Azure services  
 **Comparison**: Azure Commercial (public cloud) vs Azure Government (US Gov Virginia region)  
 **Compliance Context**: FedRAMP High
 

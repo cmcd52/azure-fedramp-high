@@ -54,3 +54,27 @@
 ---
 
 *Compute & Storage Services — Azure Policy compliance artifacts.*
+
+
+## Wave 2 (Pending Approval)
+
+_Generated 2026-04-28 by `scripts/wave2/generate.py`. Each row is **** per FedRAMP High compliance baseline._
+
+| Initiative | Service | NIST Families | Path |
+|---|---|---|---|
+| `fedramp-high-azure-backup-v1` | Azure Backup | CP, AU, SC | [policies/](./azure-backup/policies/) |
+| `fedramp-high-azure-batch-v1` | Azure Batch | AC, SC, AU | [policies/](./azure-batch/policies/) |
+| `fedramp-high-azure-files-premium-v1` | Azure Files (Premium) | AC, SC, AU | [policies/](./azure-files-premium/policies/) |
+| `fedramp-high-compute-gallery-v1` | Azure Compute Gallery | AC, CM | [policies/](./compute-gallery/policies/) |
+| `fedramp-high-data-box-v1` | Azure Data Box | MP, SC, AU | [policies/](./data-box/policies/) |
+| `fedramp-high-dedicated-host-v1` | Azure Dedicated Host | SC, CM | [policies/](./dedicated-host/policies/) |
+| `fedramp-high-hpc-v1` | Azure HPC | AC, SC, AU | [policies/](./hpc/policies/) |
+| `fedramp-high-managed-disks-v1` | Azure Managed Disks | SC, CM | [policies/](./managed-disks/policies/) |
+| `fedramp-high-netapp-files-v1` | Azure NetApp Files | AC, SC, AU | [policies/](./netapp-files/policies/) |
+| `fedramp-high-service-fabric-v1` | Azure Service Fabric | AC, SC, AU | [policies/](./service-fabric/policies/) |
+| `fedramp-high-site-recovery-v1` | Azure Site Recovery | CP, AU, SC | [policies/](./site-recovery/policies/) |
+| `fedramp-high-spring-apps-v1` | Azure Spring Apps | AC, SC, AU | [policies/](./spring-apps/policies/) |
+| `fedramp-high-static-web-apps-v1` | Static Web Apps | SC, IA, AU | [policies/](./static-web-apps/policies/) |
+| `fedramp-high-virtual-machine-scale-sets-v1` | Virtual Machine Scale Sets | AC, SC, AU, CM, SI | [policies/](./virtual-machine-scale-sets/policies/) |
+| `fedramp-high-virtual-machines-v1` | Virtual Machines | AC, SC, AU, CM, SI | [policies/](./virtual-machines/policies/) |
+| `fedramp-high-vmware-solution-v1` | Azure VMware Solution | AC, SC, CM | [policies/](./vmware-solution/policies/) |

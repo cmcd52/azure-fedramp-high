@@ -11,7 +11,7 @@ Every security control baseline MUST follow this template structure. Sections ma
 ```markdown
 # Security Control Baseline: {Service Name}
 
-**Service**: {Service name from azure-services-reference.md}
+**Service**: {GA Azure Commercial service name; must be covered or recorded in docs/azure-service-exclusions.md}
 **Category**: {Identity | Networking | Compute | Storage | Data/AI}
 **Last Updated**: {Date}
 **Environment**: Production (lower environment deltas noted inline)

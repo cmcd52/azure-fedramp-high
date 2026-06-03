@@ -53,3 +53,27 @@ All networking service initiatives follow these patterns:
 ---
 
 *Networking Services — Azure Policy compliance artifacts.*
+
+
+## Wave 2 (Pending Approval)
+
+_Generated 2026-04-28 by `scripts/wave2/generate.py`. Each row is **** per FedRAMP High compliance baseline._
+
+| Initiative | Service | NIST Families | Path |
+|---|---|---|---|
+| `fedramp-high-application-gateway-v1` | Application Gateway | SC, AU, SI | [policies/](./application-gateway/policies/) |
+| `fedramp-high-azure-cdn-v1` | Azure CDN (Microsoft) | SC, AU | [policies/](./azure-cdn/policies/) |
+| `fedramp-high-azure-firewall-v1` | Azure Firewall | SC, AU, SI | [policies/](./azure-firewall/policies/) |
+| `fedramp-high-ddos-protection-v1` | Azure DDoS Protection | SC, SI | [policies/](./ddos-protection/policies/) |
+| `fedramp-high-load-balancer-v1` | Azure Load Balancer | SC, AU | [policies/](./load-balancer/policies/) |
+| `fedramp-high-nat-gateway-v1` | NAT Gateway | SC | [policies/](./nat-gateway/policies/) |
+| `fedramp-high-network-security-group-v1` | Network Security Group | SC, AC, AU | [policies/](./network-security-group/policies/) |
+| `fedramp-high-network-watcher-v1` | Network Watcher | AU, SC | [policies/](./network-watcher/policies/) |
+| `fedramp-high-private-link-service-v1` | Azure Private Link Service | SC, AC | [policies/](./private-link-service/policies/) |
+| `fedramp-high-public-ip-v1` | Azure Public IP Address | SC | [policies/](./public-ip/policies/) |
+| `fedramp-high-route-server-v1` | Route Server | SC, AU | [policies/](./route-server/policies/) |
+| `fedramp-high-traffic-manager-v1` | Traffic Manager | SC, AU | [policies/](./traffic-manager/policies/) |
+| `fedramp-high-virtual-network-v1` | Virtual Network | SC, AC, AU | [policies/](./virtual-network/policies/) |
+| `fedramp-high-virtual-wan-v1` | Virtual WAN | SC, AU | [policies/](./virtual-wan/policies/) |
+| `fedramp-high-vpn-gateway-v1` | VPN Gateway | SC, IA, AU | [policies/](./vpn-gateway/policies/) |
+| `fedramp-high-waf-policy-v1` | Web Application Firewall Policy | SC, SI | [policies/](./waf-policy/policies/) |

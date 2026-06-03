@@ -1,0 +1,96 @@
+{
+  "name": "fedramp-high-managed-disks-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Managed Disks Controls",
+    "description": "Policy initiative for Azure Managed Disks FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Managed Disks",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-7",
+        "AC-3",
+        "SC-12",
+        "SC-13",
+        "SC-28"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditManagedDisksDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Managed Disks: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Managed Disks: Diagnostic Settings Enabled policy."
+        }
+      },
+      "denyManagedDisksPublicNetworkAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Managed Disks: Public Network Access Disabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Managed Disks: Public Network Access Disabled policy."
+        }
+      },
+      "auditManagedDisksCmkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Managed Disks: Customer-Managed Key Encryption Effect",
+          "description": "Effect for the [FedRAMP High] Azure Managed Disks: Customer-Managed Key Encryption policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditManagedDisksDiagnosticSettings",
+        "policyDefinitionName": "audit-managed-disks-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditManagedDisksDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyManagedDisksPublicNetworkAccess",
+        "policyDefinitionName": "deny-managed-disks-public-network-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyManagedDisksPublicNetworkAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditManagedDisksCmk",
+        "policyDefinitionName": "audit-managed-disks-cmk-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditManagedDisksCmkEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

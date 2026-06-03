@@ -1,0 +1,59 @@
+{
+  "name": "deny-key-vault-managed-hsm-public-network-access-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Key Vault Managed HSM: Public Network Access Disabled",
+    "description": "Denies deployment of Azure Key Vault Managed HSM resources with public network access enabled. NIST 800-53 SC-7 (Boundary Protection) requires that federal workloads accept traffic only over Private Endpoint or service-managed private network paths.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Key Vault Managed HSM",
+      "nistControls": [
+        "SC-7",
+        "AC-3"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block resources with public network access. Audit: Report only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.KeyVault/managedHSMs"
+          },
+          {
+            "field": "Microsoft.KeyVault/managedHSMs/publicNetworkAccess",
+            "notEquals": "Disabled"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

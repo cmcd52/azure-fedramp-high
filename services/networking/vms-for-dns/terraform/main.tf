@@ -143,8 +143,8 @@ resource "azurerm_virtual_machine_extension" "antimalware" {
   auto_upgrade_minor_version = true
 
   settings = jsonencode({
-    AntimalwareEnabled          = true
-    RealtimeProtectionEnabled   = "true"
+    AntimalwareEnabled        = true
+    RealtimeProtectionEnabled = "true"
     ScheduledScanSettings = {
       isEnabled = "true"
       scanType  = "Full"

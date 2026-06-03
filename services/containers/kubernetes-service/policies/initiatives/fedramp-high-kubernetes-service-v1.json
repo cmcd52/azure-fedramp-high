@@ -1,0 +1,96 @@
+{
+  "name": "fedramp-high-kubernetes-service-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Kubernetes Service Controls",
+    "description": "Policy initiative for Azure Kubernetes Service FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Kubernetes Service",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "IA-2",
+        "AC-3",
+        "SC-12",
+        "SC-13",
+        "SC-28"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditKubernetesServiceDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Kubernetes Service: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Kubernetes Service: Diagnostic Settings Enabled policy."
+        }
+      },
+      "auditKubernetesServiceManagedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Kubernetes Service: Managed Identity Required Effect",
+          "description": "Effect for the [FedRAMP High] Azure Kubernetes Service: Managed Identity Required policy."
+        }
+      },
+      "auditKubernetesServiceCmkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Kubernetes Service: Customer-Managed Key Encryption Effect",
+          "description": "Effect for the [FedRAMP High] Azure Kubernetes Service: Customer-Managed Key Encryption policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditKubernetesServiceDiagnosticSettings",
+        "policyDefinitionName": "audit-kubernetes-service-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditKubernetesServiceDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditKubernetesServiceManagedIdentity",
+        "policyDefinitionName": "audit-kubernetes-service-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditKubernetesServiceManagedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditKubernetesServiceCmk",
+        "policyDefinitionName": "audit-kubernetes-service-cmk-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditKubernetesServiceCmkEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

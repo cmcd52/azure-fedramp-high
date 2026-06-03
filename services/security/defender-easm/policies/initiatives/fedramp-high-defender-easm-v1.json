@@ -1,0 +1,47 @@
+{
+  "name": "fedramp-high-defender-easm-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Defender External Attack Surface Management Controls",
+    "description": "Policy initiative for Defender External Attack Surface Management FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Defender External Attack Surface Management",
+      "nistControls": [
+        "AU-12",
+        "AU-2"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditDefenderEasmDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Defender External Attack Surface Management: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Defender External Attack Surface Management: Diagnostic Settings Enabled policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditDefenderEasmDiagnosticSettings",
+        "policyDefinitionName": "audit-defender-easm-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditDefenderEasmDiagnosticSettingsEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "name": "fedramp-high-azure-backup-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Backup Controls",
+    "description": "Policy initiative for Azure Backup FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Backup",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-7",
+        "AC-3",
+        "IA-2",
+        "SC-12",
+        "SC-13",
+        "SC-28"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditAzureBackupDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Backup: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Backup: Diagnostic Settings Enabled policy."
+        }
+      },
+      "denyAzureBackupPublicNetworkAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Backup: Public Network Access Disabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Backup: Public Network Access Disabled policy."
+        }
+      },
+      "auditAzureBackupManagedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Backup: Managed Identity Required Effect",
+          "description": "Effect for the [FedRAMP High] Azure Backup: Managed Identity Required policy."
+        }
+      },
+      "auditAzureBackupCmkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Backup: Customer-Managed Key Encryption Effect",
+          "description": "Effect for the [FedRAMP High] Azure Backup: Customer-Managed Key Encryption policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditAzureBackupDiagnosticSettings",
+        "policyDefinitionName": "audit-azure-backup-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditAzureBackupDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyAzureBackupPublicNetworkAccess",
+        "policyDefinitionName": "deny-azure-backup-public-network-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyAzureBackupPublicNetworkAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditAzureBackupManagedIdentity",
+        "policyDefinitionName": "audit-azure-backup-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditAzureBackupManagedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditAzureBackupCmk",
+        "policyDefinitionName": "audit-azure-backup-cmk-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditAzureBackupCmkEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

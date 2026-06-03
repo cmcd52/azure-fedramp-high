@@ -51,7 +51,7 @@ variable "ingestion_subnet_id" {
 }
 
 variable "private_dns_zone_ids" {
-  type = map(string)
+  type        = map(string)
   description = <<-EOT
     Map of Private DNS Zone IDs for each Purview PE sub-resource.
     Required keys: "account" (privatelink.purview.azure.com),

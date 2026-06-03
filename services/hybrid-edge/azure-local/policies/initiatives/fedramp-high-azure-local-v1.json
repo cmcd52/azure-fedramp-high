@@ -1,0 +1,47 @@
+{
+  "name": "fedramp-high-azure-local-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Local (Azure Stack HCI) Controls",
+    "description": "Policy initiative for Azure Local (Azure Stack HCI) FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Local (Azure Stack HCI)",
+      "nistControls": [
+        "AU-12",
+        "AU-2"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditAzureLocalDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Local (Azure Stack HCI): Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Local (Azure Stack HCI): Diagnostic Settings Enabled policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditAzureLocalDiagnosticSettings",
+        "policyDefinitionName": "audit-azure-local-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditAzureLocalDiagnosticSettingsEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

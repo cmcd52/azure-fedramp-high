@@ -1,0 +1,47 @@
+{
+  "name": "fedramp-high-vmware-solution-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure VMware Solution Controls",
+    "description": "Policy initiative for Azure VMware Solution FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure VMware Solution",
+      "nistControls": [
+        "AU-12",
+        "AU-2"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditVmwareSolutionDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure VMware Solution: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure VMware Solution: Diagnostic Settings Enabled policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditVmwareSolutionDiagnosticSettings",
+        "policyDefinitionName": "audit-vmware-solution-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditVmwareSolutionDiagnosticSettingsEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

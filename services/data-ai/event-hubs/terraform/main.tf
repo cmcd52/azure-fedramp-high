@@ -46,9 +46,6 @@ resource "azurerm_eventhub_namespace" "this" {
     trusted_service_access_enabled = true
   }
 
-  # SC-28: Zone redundancy for high availability and data protection
-  zone_redundant = true
-
   # Capacity: Premium tier processing units
   capacity = var.capacity
 
@@ -64,9 +61,9 @@ resource "azurerm_eventhub_namespace" "this" {
 
 # SC-13, SC-28: Customer-managed key encryption
 resource "azurerm_eventhub_namespace_customer_managed_key" "this" {
-  count                         = var.key_vault_key_ids != null ? 1 : 0
-  eventhub_namespace_id         = azurerm_eventhub_namespace.this.id
-  key_vault_key_ids             = var.key_vault_key_ids
+  count                             = var.key_vault_key_ids != null ? 1 : 0
+  eventhub_namespace_id             = azurerm_eventhub_namespace.this.id
+  key_vault_key_ids                 = var.key_vault_key_ids
   infrastructure_encryption_enabled = true
 }
 

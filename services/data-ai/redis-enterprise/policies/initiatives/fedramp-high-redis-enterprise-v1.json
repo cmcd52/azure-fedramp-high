@@ -1,0 +1,71 @@
+{
+  "name": "fedramp-high-redis-enterprise-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Cache for Redis Enterprise Controls",
+    "description": "Policy initiative for Azure Cache for Redis Enterprise FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Cache for Redis Enterprise",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-8",
+        "SC-13"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditRedisEnterpriseDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Cache for Redis Enterprise: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Cache for Redis Enterprise: Diagnostic Settings Enabled policy."
+        }
+      },
+      "denyRedisEnterpriseMinimumTlsEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Cache for Redis Enterprise: Minimum TLS 1.2 Effect",
+          "description": "Effect for the [FedRAMP High] Azure Cache for Redis Enterprise: Minimum TLS 1.2 policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditRedisEnterpriseDiagnosticSettings",
+        "policyDefinitionName": "audit-redis-enterprise-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditRedisEnterpriseDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyRedisEnterpriseMinimumTls",
+        "policyDefinitionName": "deny-redis-enterprise-minimum-tls-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyRedisEnterpriseMinimumTlsEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

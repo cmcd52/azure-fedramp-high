@@ -1,0 +1,58 @@
+{
+  "name": "deny-logic-apps-standard-https-only-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Logic Apps Standard: HTTPS Only Required",
+    "description": "Denies deployment of Logic Apps Standard resources that do not enforce HTTPS-only access. NIST 800-53 SC-8 requires transmission confidentiality.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Logic Apps Standard",
+      "nistControls": [
+        "SC-8"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ],
+      "severity": "High",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block non-HTTPS. Audit: Report only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Web/sites"
+          },
+          {
+            "field": "Microsoft.Web/sites/httpsOnly",
+            "notEquals": true
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

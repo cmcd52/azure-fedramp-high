@@ -1,0 +1,94 @@
+{
+  "name": "fedramp-high-digital-twins-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Digital Twins Controls",
+    "description": "Policy initiative for Azure Digital Twins FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Digital Twins",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-7",
+        "AC-3",
+        "IA-2"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditDigitalTwinsDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Digital Twins: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Digital Twins: Diagnostic Settings Enabled policy."
+        }
+      },
+      "denyDigitalTwinsPublicNetworkAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Digital Twins: Public Network Access Disabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Digital Twins: Public Network Access Disabled policy."
+        }
+      },
+      "auditDigitalTwinsManagedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Digital Twins: Managed Identity Required Effect",
+          "description": "Effect for the [FedRAMP High] Azure Digital Twins: Managed Identity Required policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditDigitalTwinsDiagnosticSettings",
+        "policyDefinitionName": "audit-digital-twins-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditDigitalTwinsDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyDigitalTwinsPublicNetworkAccess",
+        "policyDefinitionName": "deny-digital-twins-public-network-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyDigitalTwinsPublicNetworkAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditDigitalTwinsManagedIdentity",
+        "policyDefinitionName": "audit-digital-twins-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditDigitalTwinsManagedIdentityEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

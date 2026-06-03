@@ -1,0 +1,71 @@
+{
+  "name": "fedramp-high-static-web-apps-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Static Web Apps Controls",
+    "description": "Policy initiative for Static Web Apps FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Static Web Apps",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "IA-2",
+        "AC-3"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditStaticWebAppsDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Static Web Apps: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Static Web Apps: Diagnostic Settings Enabled policy."
+        }
+      },
+      "auditStaticWebAppsManagedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Static Web Apps: Managed Identity Required Effect",
+          "description": "Effect for the [FedRAMP High] Static Web Apps: Managed Identity Required policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditStaticWebAppsDiagnosticSettings",
+        "policyDefinitionName": "audit-static-web-apps-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditStaticWebAppsDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditStaticWebAppsManagedIdentity",
+        "policyDefinitionName": "audit-static-web-apps-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditStaticWebAppsManagedIdentityEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

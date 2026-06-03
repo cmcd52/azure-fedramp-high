@@ -1,0 +1,119 @@
+{
+  "name": "fedramp-high-synapse-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Synapse Analytics Controls",
+    "description": "Policy initiative for Azure Synapse Analytics FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Synapse Analytics",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-7",
+        "AC-3",
+        "IA-2",
+        "SC-12",
+        "SC-13",
+        "SC-28"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditSynapseDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Synapse Analytics: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Synapse Analytics: Diagnostic Settings Enabled policy."
+        }
+      },
+      "denySynapsePublicNetworkAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Synapse Analytics: Public Network Access Disabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Synapse Analytics: Public Network Access Disabled policy."
+        }
+      },
+      "auditSynapseManagedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Synapse Analytics: Managed Identity Required Effect",
+          "description": "Effect for the [FedRAMP High] Azure Synapse Analytics: Managed Identity Required policy."
+        }
+      },
+      "auditSynapseCmkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Synapse Analytics: Customer-Managed Key Encryption Effect",
+          "description": "Effect for the [FedRAMP High] Azure Synapse Analytics: Customer-Managed Key Encryption policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditSynapseDiagnosticSettings",
+        "policyDefinitionName": "audit-synapse-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditSynapseDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denySynapsePublicNetworkAccess",
+        "policyDefinitionName": "deny-synapse-public-network-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denySynapsePublicNetworkAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditSynapseManagedIdentity",
+        "policyDefinitionName": "audit-synapse-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditSynapseManagedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditSynapseCmk",
+        "policyDefinitionName": "audit-synapse-cmk-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditSynapseCmkEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

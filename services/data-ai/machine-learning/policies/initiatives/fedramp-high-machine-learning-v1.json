@@ -1,0 +1,119 @@
+{
+  "name": "fedramp-high-machine-learning-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Machine Learning Controls",
+    "description": "Policy initiative for Azure Machine Learning FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Machine Learning",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-7",
+        "AC-3",
+        "IA-2",
+        "SC-12",
+        "SC-13",
+        "SC-28"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditMachineLearningDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Machine Learning: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Machine Learning: Diagnostic Settings Enabled policy."
+        }
+      },
+      "denyMachineLearningPublicNetworkAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Machine Learning: Public Network Access Disabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Machine Learning: Public Network Access Disabled policy."
+        }
+      },
+      "auditMachineLearningManagedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Machine Learning: Managed Identity Required Effect",
+          "description": "Effect for the [FedRAMP High] Azure Machine Learning: Managed Identity Required policy."
+        }
+      },
+      "auditMachineLearningCmkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Machine Learning: Customer-Managed Key Encryption Effect",
+          "description": "Effect for the [FedRAMP High] Azure Machine Learning: Customer-Managed Key Encryption policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditMachineLearningDiagnosticSettings",
+        "policyDefinitionName": "audit-machine-learning-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditMachineLearningDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyMachineLearningPublicNetworkAccess",
+        "policyDefinitionName": "deny-machine-learning-public-network-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyMachineLearningPublicNetworkAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditMachineLearningManagedIdentity",
+        "policyDefinitionName": "audit-machine-learning-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditMachineLearningManagedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditMachineLearningCmk",
+        "policyDefinitionName": "audit-machine-learning-cmk-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditMachineLearningCmkEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

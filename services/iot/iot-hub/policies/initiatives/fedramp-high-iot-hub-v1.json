@@ -1,0 +1,142 @@
+{
+  "name": "fedramp-high-iot-hub-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure IoT Hub Controls",
+    "description": "Policy initiative for Azure IoT Hub FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure IoT Hub",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-7",
+        "AC-3",
+        "SC-8",
+        "SC-13",
+        "IA-2",
+        "SC-12",
+        "SC-28"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditIotHubDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure IoT Hub: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure IoT Hub: Diagnostic Settings Enabled policy."
+        }
+      },
+      "denyIotHubPublicNetworkAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure IoT Hub: Public Network Access Disabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure IoT Hub: Public Network Access Disabled policy."
+        }
+      },
+      "denyIotHubMinimumTlsEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure IoT Hub: Minimum TLS 1.2 Effect",
+          "description": "Effect for the [FedRAMP High] Azure IoT Hub: Minimum TLS 1.2 policy."
+        }
+      },
+      "auditIotHubManagedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure IoT Hub: Managed Identity Required Effect",
+          "description": "Effect for the [FedRAMP High] Azure IoT Hub: Managed Identity Required policy."
+        }
+      },
+      "auditIotHubCmkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure IoT Hub: Customer-Managed Key Encryption Effect",
+          "description": "Effect for the [FedRAMP High] Azure IoT Hub: Customer-Managed Key Encryption policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditIotHubDiagnosticSettings",
+        "policyDefinitionName": "audit-iot-hub-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditIotHubDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyIotHubPublicNetworkAccess",
+        "policyDefinitionName": "deny-iot-hub-public-network-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyIotHubPublicNetworkAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyIotHubMinimumTls",
+        "policyDefinitionName": "deny-iot-hub-minimum-tls-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyIotHubMinimumTlsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditIotHubManagedIdentity",
+        "policyDefinitionName": "audit-iot-hub-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditIotHubManagedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditIotHubCmk",
+        "policyDefinitionName": "audit-iot-hub-cmk-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditIotHubCmkEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

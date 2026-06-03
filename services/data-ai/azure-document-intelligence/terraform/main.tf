@@ -19,9 +19,9 @@
 
 # NIST 800-53: SC-7, IA-2, SC-13 — Azure Document Intelligence account
 resource "azurerm_cognitive_account" "this" {
-  name                = var.docintel_account_name
-  location            = var.location
-  resource_group_name = var.resource_group_name
+  name                  = var.docintel_account_name
+  location              = var.location
+  resource_group_name   = var.resource_group_name
   kind                  = "FormRecognizer"
   sku_name              = var.sku_name
   custom_subdomain_name = var.docintel_account_name
