@@ -1,0 +1,63 @@
+{
+  "name": "audit-service-bus-managed-identity-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Service Bus: Managed Identity Required",
+    "description": "Audits Service Bus resources to ensure a system-assigned or user-assigned managed identity is configured. NIST 800-53 IA-2 (Identification and Authentication) requires service-to-service authentication without embedded credentials.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Service Bus",
+      "nistControls": [
+        "IA-2",
+        "AC-3"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ],
+      "severity": "Medium",
+      "fipsApplicable": false,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Audit: Report missing identity. Deny: Block. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.ServiceBus/namespaces"
+          },
+          {
+            "field": "identity.type",
+            "notIn": [
+              "SystemAssigned",
+              "UserAssigned",
+              "SystemAssigned, UserAssigned"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

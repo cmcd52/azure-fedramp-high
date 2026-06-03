@@ -1,6 +1,7 @@
 # Data Model: FedRAMP High Compliance Baseline
 
-**Branch**: `001-fedramp-compliance-baseline` | **Date**: 2026-03-27
+**Branch**: `001-fedramp-compliance-baseline` | **Date**: 2026-03-27 | **Last Updated**: 2026-04-28
+**Constitution Version**: v8.0.0 — All GA Azure Commercial Services
 **Input**: Feature spec entities, research findings, and architecture reference.
 
 ---
@@ -26,7 +27,7 @@ A single policy rule targeting a specific configuration aspect of an Azure servi
 | `metadata.frameworks` | string[] | Applicable frameworks (e.g., `["FedRAMP High", "DFARS/CUI", "CMMC 2.0 L2"]`) | At least one required |
 | `metadata.fipsApplicable` | boolean | Whether FIPS 140-2 is relevant to this control | Required for encryption controls |
 | `metadata.severity` | string | `High`, `Medium`, `Low` | Required |
-| `metadata.service` | string | Target Azure service name | Must match services reference |
+| `metadata.service` | string | Target Azure service name | Must be a GA Azure Commercial service that is either covered by deliverables or recorded in `docs/azure-service-exclusions.md` |
 | `metadata.environment` | string | `all`, `production`, `lower` | Required |
 
 **State transitions**: Draft → Audit (lower) → Audit (production) → Deny (production). Exempt state available with expiration.
@@ -141,6 +142,7 @@ A documented deviation between production and lower environment.
 | `riskAssessment` | string | Impact of relaxation |
 | `minimumBaseline` | boolean | Whether this meets the minimum lower baseline |
 
+
 ---
 
 ## Entity Relationships
@@ -169,9 +171,13 @@ All entities ──────► Compliance Mapping Index (consolidated)
 
 ---
 
-## Service Catalog (Complete)
+## Service Catalog (Iterative Wave Model)
 
-Every service from `.specify/memory/azure-services-reference.md` with artifact applicability:
+Under Constitution v8.0.0 Principle I, scope is **all GA Azure Commercial services**. There is no fixed closed-set list. Services are brought into the project iteratively in waves; services that cannot meet FedRAMP High are recorded in `docs/azure-service-exclusions.md`.
+
+### Wave 1 — Initial Services (23)
+
+Every Wave 1 service has a complete artifact set (policy + Terraform + controls + logging) plus compliance mapping entries.
 
 | # | Service | Group | Policy | Terraform | Controls | Logging | Notes |
 |---|---------|-------|--------|-----------|----------|---------|-------|
@@ -199,4 +205,16 @@ Every service from `.specify/memory/azure-services-reference.md` with artifact a
 | 22 | AI Speech Service | Data/AI | ✓ | ✓ | ✓ | ✓ | |
 | 23 | Event Hubs | Data/AI | ✓ | ✓ | ✓ | ✓ | |
 
-**Total**: 23 services. 21 with full artifact set (policy + Terraform + controls + logging). 1 with controls-only (Managed Identity). 1 additional cross-cutting controls document for cross-tenant B2B guest access (Azure tenant configuration).
+### Wave 2 — Sweep Candidates (TBD)
+
+Wave 2 enumerates remaining GA Azure Commercial services not yet in scope and not yet excluded. The candidate list is produced as `docs/wave-2-candidates.md` (task T018) and each candidate is classified as `policy-eligible` (full artifact set) or `exclude` (recorded in `docs/azure-service-exclusions.md` with required fields).
+
+### Standing Exclusions (recorded in `docs/azure-service-exclusions.md`)
+
+- Microsoft 365 (all workloads) — SaaS, no Azure ARM types
+- Entra ID (standalone) — SaaS identity platform; per-service Azure consumption documented inline
+- Microsoft Intune — SaaS endpoint management, no Azure ARM types
+
+### Continuous Maintenance
+
+When Microsoft GA's a new Azure Commercial service, or upgrades a previously excluded service to support FedRAMP High capabilities, the project MUST add the service to scope and (if previously excluded) remove the exclusion. New services are subject to the same per-service Project Owner approval gate before being considered complete.

@@ -17,10 +17,10 @@
 
 # NIST 800-53: SC-28, SC-13, SC-7, SC-8, AC-3 — Storage Account
 resource "azurerm_storage_account" "this" {
-  name                = var.storage_account_name
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  account_tier        = var.account_tier
+  name                     = var.storage_account_name
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
+  account_tier             = var.account_tier
   account_replication_type = var.account_replication
 
   # SC-8: HTTPS-only — HTTP requests rejected

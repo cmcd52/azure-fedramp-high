@@ -1,0 +1,119 @@
+{
+  "name": "fedramp-high-health-data-services-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Health Data Services Controls",
+    "description": "Policy initiative for Azure Health Data Services FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Health Data Services",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-7",
+        "AC-3",
+        "IA-2",
+        "SC-12",
+        "SC-13",
+        "SC-28"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditHealthDataServicesDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Health Data Services: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Health Data Services: Diagnostic Settings Enabled policy."
+        }
+      },
+      "denyHealthDataServicesPublicNetworkAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Health Data Services: Public Network Access Disabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Health Data Services: Public Network Access Disabled policy."
+        }
+      },
+      "auditHealthDataServicesManagedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Health Data Services: Managed Identity Required Effect",
+          "description": "Effect for the [FedRAMP High] Azure Health Data Services: Managed Identity Required policy."
+        }
+      },
+      "auditHealthDataServicesCmkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Health Data Services: Customer-Managed Key Encryption Effect",
+          "description": "Effect for the [FedRAMP High] Azure Health Data Services: Customer-Managed Key Encryption policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditHealthDataServicesDiagnosticSettings",
+        "policyDefinitionName": "audit-health-data-services-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditHealthDataServicesDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyHealthDataServicesPublicNetworkAccess",
+        "policyDefinitionName": "deny-health-data-services-public-network-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyHealthDataServicesPublicNetworkAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditHealthDataServicesManagedIdentity",
+        "policyDefinitionName": "audit-health-data-services-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditHealthDataServicesManagedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditHealthDataServicesCmk",
+        "policyDefinitionName": "audit-health-data-services-cmk-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditHealthDataServicesCmkEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

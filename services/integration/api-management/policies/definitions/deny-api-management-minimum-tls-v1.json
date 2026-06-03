@@ -1,0 +1,64 @@
+{
+  "name": "deny-api-management-minimum-tls-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] API Management: Minimum TLS 1.2",
+    "description": "Denies deployment of API Management resources that allow TLS versions below 1.2. NIST 800-53 SC-8 (Transmission Confidentiality) and SC-13 (Cryptographic Protection) require TLS 1.2+ with FIPS 140-2 validated cipher suites.",
+    "mode": "Indexed",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "API Management",
+      "nistControls": [
+        "SC-8",
+        "SC-13"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2",
+        "FIPS 140-2"
+      ],
+      "severity": "High",
+      "fipsApplicable": true,
+      "stigFindingId": "No STIG available",
+      "environment": "all"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Deny: Block resources allowing TLS < 1.2. Audit: Report only. Disabled: Do not evaluate."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.ApiManagement/service"
+          },
+          {
+            "field": "Microsoft.ApiManagement/service/minimumTlsVersion",
+            "notIn": [
+              "1.2",
+              "TLS1_2",
+              "TLSv1_2"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

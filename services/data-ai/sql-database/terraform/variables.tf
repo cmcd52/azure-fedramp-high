@@ -1,0 +1,43 @@
+variable "name" {
+  type        = string
+  description = "Resource name."
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "Resource tags."
+}
+
+variable "log_analytics_workspace_id" {
+  type        = string
+  description = "Central Log Analytics workspace resource ID for diagnostic forwarding."
+}
+
+variable "subnet_id" {
+  type        = string
+  default     = null
+  description = "Subnet ID for the Private Endpoint NIC."
+}
+
+variable "private_dns_zone_id" {
+  type        = string
+  default     = null
+  description = "Private DNS zone ID for service-specific zone (e.g., privatelink.<service>.azure.com)."
+}
+
+variable "key_vault_key_id" {
+  type        = string
+  default     = null
+  description = "Key Vault key ID for CMK encryption-at-rest. When null, service-managed keys apply."
+}
+
+variable "server_id" {
+  type        = string
+  description = "The ID of the MSSQL Server on which to create the database."
+}
+
+variable "identity_ids" {
+  type        = list(string)
+  description = "List of User Assigned Identity IDs for the database."
+}

@@ -33,3 +33,12 @@
 ---
 
 *Identity Services — Azure Policy compliance artifacts.*
+
+
+## Wave 2 (Pending Approval)
+
+_Generated 2026-04-28 by `scripts/wave2/generate.py`. Each row is **** per FedRAMP High compliance baseline._
+
+| Initiative | Service | NIST Families | Path |
+|---|---|---|---|
+| `fedramp-high-entra-domain-services-v1` | Microsoft Entra Domain Services | AC, IA, AU | [policies/](./entra-domain-services/policies/) |

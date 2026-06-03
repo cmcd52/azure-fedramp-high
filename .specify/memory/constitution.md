@@ -1,8 +1,20 @@
+<!--
+Sync Impact Report
+- Version change: 8.0.0 → 8.1.0 (MINOR — added Documentation Consistency governance rule)
+- Changes:
+  - Added "Documentation Consistency" governance rule: artifact changes MUST be accompanied by documentation updates
+  - Documentation contradicting current artifact state is now a constitution violation
+  - Previous: 7.0.0 → 8.0.0 removed Principle IX (Service Approval and Immutability)
+  - Constitution has 8 principles (I–VIII); NON-NEGOTIABLE: I, II, III, VIII
+-->
+
 # Azure Cloud FedRAMP High — Constitution
 
 ## Project Purpose
 
-This repository compiles all necessary Azure Policy definitions, Azure service configurations, documentation, explanations, and source references to ensure the in-scope Azure services are designed to meet FedRAMP High Authorization compliance within the **Azure Commercial** cloud. Azure Government is explicitly out of scope.
+This repository compiles all necessary Azure Policy definitions, Azure service configurations, documentation, explanations, and source references to ensure **all Generally Available (GA) Azure Commercial cloud services** are designed to meet FedRAMP High Authorization compliance. Azure Government is explicitly out of scope. Services that cannot be configured to meet FedRAMP High requirements are tracked and documented with justification in `docs/azure-service-exclusions.md`.
+
+Because GovRAMP (formerly StateRAMP) verification levels are derived from the same NIST 800-53 Rev 5 control framework that underpins FedRAMP, configurations produced by this project are intended to satisfy GovRAMP Authorized status requirements at the corresponding impact level. GovRAMP alignment is a secondary objective — FedRAMP High remains the primary authorization target.
 
 
 
@@ -10,26 +22,36 @@ This repository compiles all necessary Azure Policy definitions, Azure service c
 
 - **`services/`** — Per-service compliance artifacts organized by group (identity, networking, compute-storage, data-ai), each containing `policies/`, `terraform/`, `controls/`, and `logging/` subdirectories
 - **`shared/`** — Cross-cutting infrastructure: shared Terraform modules (Log Analytics, Key Vault, VNet, Private DNS, State Backend) and centralized logging strategy
-- **`.specify/memory/`** — Project memory: constitution, services reference, and compliance mapping index
-- **`docs/`** — Research and reference documentation (Azure Gov parity analysis, pricing)
+- **`.specify/memory/`** — Project memory: constitution and compliance mapping index
+- **`docs/`** — Research, deliverables, and governance ledgers (Azure Gov parity analysis, pricing, GovRAMP applicability guide, service exclusions tracker)
 - **`specs/`** — Feature specifications, implementation plans, and task lists
 
 
 ## Core Principles
 
-### I. Scoped Azure Services (NON-NEGOTIABLE)
+### I. All Generally Available Azure Commercial Services (NON-NEGOTIABLE)
 
-All work MUST reference only the Azure services listed in `.specify/memory/azure-services-reference.md`. No additional services may be introduced in specifications, plans, tasks, or implementations unless that reference document is formally amended first. Every service added to the reference MUST be verified as **FedRAMP High authorized** per the Microsoft Azure compliance documentation before inclusion.
+The scope of this project is **all Generally Available (GA) Azure Commercial cloud services**. There is no pre-defined fixed list of in-scope services. Every Azure service that has reached General Availability in Azure Commercial regions is in scope unless it has been formally excluded and documented in `docs/azure-service-exclusions.md`.
 
-### II. Complete Service Coverage (NON-NEGOTIABLE)
+A service may only be excluded if it meets one or more of the following criteria:
+- The service **cannot be configured** to satisfy FedRAMP High control requirements (e.g., lacks encryption at rest, does not support private endpoints where required, or cannot meet FIPS 140-2 cryptographic requirements).
+- The service is **not available** in Azure Commercial regions (Azure Government-only services are out of scope per Principle III).
+- The service is a **SaaS platform without Azure ARM resource types** (e.g., Microsoft 365, Entra ID as a standalone service, Microsoft Intune) and therefore falls outside the Azure IaaS/PaaS scope.
+- The service is in **preview** (not Generally Available) at the time of assessment.
 
-The project MUST produce deliverable output for **every** Azure service listed in `.specify/memory/azure-services-reference.md`. No service may be left unaddressed. For each listed service, the project MUST deliver at minimum:
+Every exclusion MUST be documented in `docs/azure-service-exclusions.md` with: the service name, the exclusion reason, the specific FedRAMP High control(s) that cannot be satisfied, the date of assessment, and a reference to Microsoft documentation substantiating the limitation.
+
+### II. Complete Service Coverage with Exclusion Tracking (NON-NEGOTIABLE)
+
+The project MUST produce deliverable output for **every GA Azure Commercial service** that is not formally excluded in `docs/azure-service-exclusions.md`. No service may be left unaddressed without a documented exclusion. For each covered service, the project MUST deliver at minimum:
 - **Azure Policy definitions** applicable to the service for FedRAMP High controls.
 - **Service configuration baseline** documenting the compliant configuration (network, identity, encryption, logging).
 - **NIST 800-53 Rev 5 control mapping** identifying which controls the service configuration satisfies.
 - **Source-referenced documentation** explaining the configuration rationale with links to Microsoft and FedRAMP documentation.
 
-A service is not considered complete until all of the above artifacts exist. Specifications, plans, and task lists MUST account for every listed service — omitting a service is a constitution violation.
+A service is not considered complete until all of the above artifacts exist. Specifications, plans, and task lists MUST account for every covered service — omitting a service without a documented exclusion is a constitution violation.
+
+The exclusion tracker (`docs/azure-service-exclusions.md`) MUST be maintained as a living document. When a previously excluded service gains capabilities that allow FedRAMP High compliance (e.g., Microsoft adds private endpoint support or FIPS 140-2 validated encryption), the exclusion MUST be removed and the service brought into scope.
 
 ### III. Azure Commercial Only (NON-NEGOTIABLE)
 
@@ -44,6 +66,8 @@ The FedRAMP High baseline is derived from:
 - **FIPS 200** — Minimum security requirements for federal information systems.
 - **NIST SP 800-53B** — Control baselines defining which NIST 800-53 Rev 5 controls apply at High.
 - **NIST SP 800-37 Rev 2** — Risk Management Framework (RMF) lifecycle under which FedRAMP operates.
+
+**GovRAMP Alignment**: Because GovRAMP (formerly StateRAMP, rebranded February 2025) derives its security verification framework from the same NIST 800-53 Rev 5 controls, artifacts produced under this principle MUST be structured so that GovRAMP Authorized-level verification can be demonstrated without additional rework. Where a FedRAMP High control satisfies a corresponding GovRAMP requirement, the control mapping documentation SHOULD note the GovRAMP applicability. GovRAMP is a 501(c)(6) nonprofit and is not affiliated with FedRAMP or the United States Government.
 
 ### V. Source-Referenced Documentation
 
@@ -72,6 +96,8 @@ This repository MUST NOT contain any customer-specific information. All architec
 - Any image or diagram directory MUST NOT contain files with customer-identifying information in file names or content.
 - If customer-specific source materials are used for reference, only the anonymized derivative artifacts may be stored in this repository.
 
+
+
 ## Compliance and Security Standards
 
 - **Data Classification**: All data handled by these services is assumed to be at the FedRAMP High impact level (FIPS 199 High) until explicitly classified otherwise.
@@ -82,6 +108,7 @@ This repository MUST NOT contain any customer-specific information. All architec
 - **Identity and Authentication**: Digital identity practices MUST align with **NIST SP 800-63-4** (Digital Identity Guidelines) for identity proofing, authentication, and federation assurance levels appropriate to FedRAMP High.
 - **DFARS/CUI and CMMC**: For Controlled Unclassified Information (CUI), configurations MUST satisfy **DFARS 252.204-7012**, **NIST SP 800-171 Rev 3** (Protecting CUI), and **NIST SP 800-172** (Enhanced Security Requirements for CUI) where applicable. Configurations MUST also support **CMMC 2.0** Level 2 (aligns with NIST 800-171) and Level 3 (aligns with NIST 800-172) assessment readiness.
 - **Vulnerability Management**: Vulnerability management practices MUST account for **CISA Binding Operational Directive (BOD) 22-01** (Known Exploited Vulnerabilities) and **CISA BOD 23-01** (Asset Visibility and Vulnerability Detection) where applicable to the cloud service configuration.
+- **GovRAMP Alignment**: Configurations and control mappings produced by this project MUST be structured to support **GovRAMP** (formerly StateRAMP) verification at the Authorized level. Because GovRAMP verification levels are derived from NIST 800-53 Rev 5, FedRAMP High configurations inherently satisfy GovRAMP requirements at or above the corresponding impact level. Control mapping documents SHOULD include a notation where a mapped NIST 800-53 control also satisfies a GovRAMP verification requirement, enabling state and local government adopters to leverage these artifacts for GovRAMP procurement compliance.
 
 ## Applicable Regulatory and Standards Framework
 
@@ -139,17 +166,25 @@ The following is the authoritative hierarchy of regulations, standards, and guid
 | **CISA BOD 22-01** | Reducing the Significant Risk of Known Exploited Vulnerabilities. |
 | **CISA BOD 23-01** | Improving Asset Visibility and Vulnerability Detection on Federal Networks. |
 
+### Tier 7 — State and Local Government Programs
+| Program | Description |
+|---------|-------------|
+| **GovRAMP** (govramp.org) | Formerly StateRAMP (rebranded February 2025). A 501(c)(6) nonprofit membership organization providing standardized cybersecurity verification and validation for cloud services used by state, local, and education (SLED) entities. GovRAMP verification levels (Security Snapshot, Progressing, Ready, Core, Authorized) are derived from NIST 800-53 Rev 5 controls. GovRAMP is **not** affiliated with FedRAMP or the United States Government. Configurations meeting FedRAMP High inherently satisfy GovRAMP Authorized-level requirements at the corresponding impact level. |
+| **TX-RAMP** | Texas Risk and Authorization Management Program — state-level program that recognizes GovRAMP Progressing Snapshot and Ready status for Provisionally Authorized status. Referenced as an example of state-level adoption of GovRAMP. |
+
 ## Technology Constraints
 
 - **Cloud Provider**: Microsoft Azure Commercial only — no Azure Government, no multi-cloud.
-- **Approved Services**: Exactly those listed in `.specify/memory/azure-services-reference.md`.
+- **Service Scope**: All Generally Available (GA) Azure Commercial services. Excluded services are tracked in `docs/azure-service-exclusions.md`.
 - **M365**: Microsoft 365 (GCC, GCC High, and all M365 workloads) is out of scope for this project.
 
 ## Governance
 
 - This constitution supersedes all other project guidance. Conflicts are resolved in favor of this document.
-- Adding a new Azure service requires amending `.specify/memory/azure-services-reference.md` with justification, then updating this constitution if new principles apply.
+- Excluding an Azure service from scope requires documenting the exclusion in `docs/azure-service-exclusions.md` with: service name, exclusion reason, the specific FedRAMP High control(s) that cannot be satisfied, assessment date, and Microsoft documentation reference.
+- When a previously excluded service gains FedRAMP High compliance capabilities, the exclusion MUST be removed and the service brought into scope.
 - All specifications and plans MUST include a "Constitution Check" confirming alignment with these principles.
+- **Documentation Consistency**: Any change to project artifacts (policies, Terraform modules, control baselines, service configurations, exclusions, or scope) MUST be accompanied by corresponding updates to all affected project documentation — including but not limited to README.md, constitution verification checklists, policy initiative summaries, spec documents, and cross-reference guides. Documentation that contradicts the current state of project artifacts is a constitution violation.
 
 
-**Version**: 5.1.0 | **Ratified**: 2026-03-27 | **Last Amended**: 2026-03-29
+**Version**: 8.1.0 | **Ratified**: 2026-03-27 | **Last Amended**: 2026-05-22

@@ -1,0 +1,47 @@
+{
+  "name": "fedramp-high-powerbi-embedded-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Power BI Embedded Controls",
+    "description": "Policy initiative for Power BI Embedded FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Power BI Embedded",
+      "nistControls": [
+        "AU-12",
+        "AU-2"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditPowerbiEmbeddedDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Power BI Embedded: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Power BI Embedded: Diagnostic Settings Enabled policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditPowerbiEmbeddedDiagnosticSettings",
+        "policyDefinitionName": "audit-powerbi-embedded-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditPowerbiEmbeddedDiagnosticSettingsEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

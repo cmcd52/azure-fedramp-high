@@ -1,0 +1,72 @@
+{
+  "name": "fedramp-high-netapp-files-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure NetApp Files Controls",
+    "description": "Policy initiative for Azure NetApp Files FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure NetApp Files",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-12",
+        "SC-13",
+        "SC-28"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditNetappFilesDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure NetApp Files: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure NetApp Files: Diagnostic Settings Enabled policy."
+        }
+      },
+      "auditNetappFilesCmkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure NetApp Files: Customer-Managed Key Encryption Effect",
+          "description": "Effect for the [FedRAMP High] Azure NetApp Files: Customer-Managed Key Encryption policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditNetappFilesDiagnosticSettings",
+        "policyDefinitionName": "audit-netapp-files-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditNetappFilesDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditNetappFilesCmk",
+        "policyDefinitionName": "audit-netapp-files-cmk-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditNetappFilesCmkEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

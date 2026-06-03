@@ -17,10 +17,10 @@ A compliance engineer needs a complete set of Azure Policy definitions and polic
 
 **Acceptance Scenarios**:
 
-1. **Given** an in-scope Azure service from the services reference, **When** a compliance engineer looks up that service, **Then** a dedicated set of policy definitions exists covering all applicable FedRAMP High controls (encryption, networking, identity, logging at minimum).
+1. **Given** a GA Azure Commercial service, **When** a compliance engineer looks up that service, **Then** a dedicated set of policy definitions exists covering all applicable FedRAMP High controls (encryption, networking, identity, logging at minimum) — unless the service is formally excluded in `docs/azure-service-exclusions.md`.
 2. **Given** a policy initiative for a service, **When** an auditor reviews it, **Then** every policy definition within the initiative includes a mapping to specific NIST 800-53 Rev 5 control IDs.
 3. **Given** a non-compliant resource configuration, **When** the policy initiative is assigned to a subscription, **Then** the non-compliant resource is flagged with a clear description of the violation and the control it violates.
-4. **Given** the complete set of policy initiatives, **When** cross-referenced against the services reference, **Then** every listed Azure service has at least one policy initiative — no service is missing.
+4. **Given** the complete set of policy initiatives, **When** cross-referenced against all GA Azure Commercial services, **Then** every service has at least one policy initiative or a documented exclusion in `docs/azure-service-exclusions.md` — no service is unaddressed.
 5. **Given** a policy definition with a configurable effect parameter, **When** assigned in the production environment, **Then** critical controls (encryption, network isolation, identity) default to Deny effect. **When** assigned in the lower (test/dev) environment, **Then** the same definition defaults to Audit effect.
 6. **Given** the complete set of policy initiatives, **When** the assignment scope is reviewed, **Then** policy initiatives are assignable at the management group level and target all in-scope tenants: Primary Azure Commercial (production), Parent Org Azure Commercial (cross-tenant controls), and the Lower Environment tenant.
 
@@ -38,7 +38,7 @@ An infrastructure engineer needs Terraform modules for every in-scope Azure serv
 
 1. **Given** an in-scope Azure service, **When** an engineer applies its Terraform module with default variables, **Then** the resulting resource meets all FedRAMP High requirements (encryption, network isolation, logging, identity) without overrides.
 2. **Given** a Terraform module for a service, **When** reviewed, **Then** it includes inline comments referencing the NIST 800-53 control(s) each configuration block satisfies.
-3. **Given** the complete set of Terraform modules, **When** cross-referenced against the services reference, **Then** every listed Azure service has a corresponding module — no service is missing.
+3. **Given** the complete set of Terraform modules, **When** cross-referenced against all GA Azure Commercial services, **Then** every service has a corresponding module or a documented exclusion in `docs/azure-service-exclusions.md` — no service is unaddressed.
 4. **Given** a deployed Terraform resource, **When** the P1 policy initiative is assigned, **Then** the resource shows zero policy violations.
 5. **Given** the Terraform state backend configuration, **When** reviewed, **Then** state is stored in an Azure Storage Account with encryption at rest, RBAC-only access (no shared access keys), state file locking, and private endpoint.
 6. **Given** the shared infrastructure modules (Log Analytics workspace, Key Vault, Virtual Network, Private DNS Zones), **When** `terraform plan` is run for a service module, **Then** the plan references shared infrastructure outputs and does not duplicate foundational resources.
@@ -77,7 +77,7 @@ An operations engineer needs a centralized logging and monitoring strategy with 
 
 1. **Given** an in-scope Azure service, **When** its logging configuration is reviewed, **Then** it specifies: enabled diagnostic log categories, destination Log Analytics workspace, retention period (minimum 12 months online in Log Analytics, 18 months total in archived/cold storage per FedRAMP High AU-11), OMB M-21-31 logging maturity tier target (EL3 for critical security events, EL1 minimum for all others), and any required alert rules.
 2. **Given** the centralized logging strategy document, **When** reviewed, **Then** it defines the Log Analytics workspace topology, data retention requirements (12 months online, 18 months archived), NIST 800-53 AU family control mappings, OMB M-21-31 event logging tier compliance, and NIST SP 800-137 continuous monitoring alignment.
-3. **Given** the complete set of logging configurations, **When** cross-referenced against the services reference, **Then** every listed Azure service has a logging configuration — no service is missing.
+3. **Given** the complete set of logging configurations, **When** cross-referenced against all GA Azure Commercial services, **Then** every covered service has a logging configuration — no service is unaddressed without a documented exclusion.
 4. **Given** a security event (e.g., failed authentication, policy violation), **When** it occurs, **Then** the logging configuration ensures it is captured and an alert rule exists to notify operations within the defined SLA.
 
 ---
@@ -95,7 +95,7 @@ A compliance officer needs a consolidated reference index that maps every config
 1. **Given** any Azure Policy definition, Terraform module, or security control document, **When** a configuration decision is identified, **Then** the reference index contains a corresponding entry with: service, setting, control ID(s), framework(s), and source URL.
 2. **Given** the reference index, **When** filtered by compliance framework (FISMA, FedRAMP, NIST 800-53, FIPS 140, NIST 800-171/172, CMMC 2.0, STIG, DFARS/CUI, EO 14028, OMB M-22-09, OMB M-21-31), **Then** every framework shows coverage across all in-scope services.
 3. **Given** a DISA STIG applicable to an in-scope service, **When** reviewed, **Then** the STIG finding ID is mapped to the corresponding Azure Policy definition and Terraform configuration setting.
-4. **Given** the complete reference index, **When** cross-referenced against the services reference, **Then** every listed service has at least one reference entry — no service is missing.
+4. **Given** the complete reference index, **When** cross-referenced against all GA Azure Commercial services, **Then** every covered service has at least one reference entry — no service is unaddressed without a documented exclusion.
 
 ---
 
@@ -115,7 +115,7 @@ A compliance officer needs a consolidated reference index that maps every config
 ### Functional Requirements
 
 **Azure Policy and Governance**:
-- **FR-001**: The project MUST produce Azure Policy definitions for every Azure service in the services reference, covering at minimum: encryption at rest (FIPS 140-2 validated), encryption in transit (TLS 1.2+ per NIST SP 800-52 Rev 2), network isolation, identity/authentication, and diagnostic logging.
+- **FR-001**: The project MUST produce Azure Policy definitions for every GA Azure Commercial service that is not formally excluded in `docs/azure-service-exclusions.md`, covering at minimum: encryption at rest (FIPS 140-2 validated), encryption in transit (TLS 1.2+ per NIST SP 800-52 Rev 2), network isolation, identity/authentication, and diagnostic logging.
 - **FR-002**: Policy definitions MUST be organized into policy initiatives (policy sets), grouped by NIST 800-53 Rev 5 control family (e.g., AC, AU, SC, IA, CM).
 - **FR-003**: Every policy definition MUST include metadata specifying the mapped NIST 800-53 control ID(s), severity, applicable compliance framework(s) (FedRAMP, FISMA, DFARS/CUI, CMMC, EO 14028), and FIPS 140 applicability where encryption is involved.
 - **FR-004**: Policy definitions MUST target Azure Commercial endpoints and resource provider APIs only — no Azure Government-specific policies.
@@ -124,7 +124,7 @@ A compliance officer needs a consolidated reference index that maps every config
 - **FR-007**: Policy initiatives MUST be assignable at the management group level and MUST document the assignment scope for all in-scope tenants: Primary Azure Commercial (production), Parent Org Azure Commercial (cross-tenant B2B controls), and the Lower Environment (test/dev) tenant.
 
 **Terraform Infrastructure as Code**:
-- **FR-008**: The project MUST produce Terraform modules for every Azure service in the services reference that deploy a FedRAMP-High-compliant resource with secure defaults.
+- **FR-008**: The project MUST produce Terraform modules for every GA Azure Commercial service that is not formally excluded in `docs/azure-service-exclusions.md`, deploying a FedRAMP-High-compliant resource with secure defaults.
 - **FR-009**: Terraform modules MUST configure: private endpoints (where supported), encryption at rest using FIPS 140-2 validated cryptographic modules (customer-managed keys where supported), TLS 1.2+ enforcement per NIST SP 800-52 Rev 2, diagnostic settings routed to a Log Analytics workspace, and Managed Identity for authentication.
 - **FR-010**: Terraform modules MUST include inline comments mapping configuration blocks to NIST 800-53 control IDs.
 - **FR-011**: Terraform modules MUST be usable independently (per service) and composable for full-environment deployment.
@@ -155,11 +155,15 @@ A compliance officer needs a consolidated reference index that maps every config
 - **FR-030**: Identity and authentication configurations MUST reference NIST SP 800-63-4 assurance levels (IAL, AAL, FAL) and document the achieved assurance level for each authentication flow.
 - **FR-031**: Zero Trust architecture decisions MUST trace to NIST SP 800-207 tenets and EO 14028 / OMB M-22-09 requirements.
 
+**GovRAMP Applicability Guide**:
+- **FR-036**: The project MUST produce a GovRAMP Applicability Guide (`docs/govramp-applicability-guide.md`) that describes how to use the FedRAMP High compliance configurations, policy definitions, control mappings, and Terraform modules produced by this project to satisfy GovRAMP verification requirements for state, local, and education (SLED) cloud procurements. The guide MUST include: (a) an overview of GovRAMP and its relationship to FedRAMP, (b) GovRAMP impact levels (Low, Low+, Moderate) mapped to FedRAMP baselines, (c) GovRAMP verification statuses (Security Snapshot, Progressing, Core, Ready, Authorized), (d) step-by-step guidance for reusing this project's control mappings, policy definitions, and Terraform artifacts for GovRAMP documentation, (e) the GovRAMP Fast Track path for FedRAMP-authorized providers, (f) continuous monitoring alignment between FedRAMP and GovRAMP, (g) a comparison table of key differences between FedRAMP and GovRAMP, (h) state-level reciprocity (e.g., TX-RAMP), and (i) scope limitations clarifying that no GovRAMP-specific configurations or policy definitions are produced — FedRAMP High configurations satisfy all GovRAMP impact levels by inheritance. The guide MUST include source references to govramp.org and NIST publications.
+
 **Cross-Cutting**:
 - **FR-032**: All artifacts MUST be anonymized per Constitution Principle VIII — no customer-specific names, tenant IDs, subscription IDs, or domain names.
 - **FR-033**: All artifacts MUST align with the established multi-tenant topology and environment isolation.
-- **FR-034**: The complete set of deliverables MUST cover every service listed in `.specify/memory/azure-services-reference.md` with no omissions (Constitution Principle II).
+- **FR-034**: The complete set of deliverables MUST cover every GA Azure Commercial service that is not formally excluded in `docs/azure-service-exclusions.md` — no service may be unaddressed without a documented exclusion (Constitution Principle II).
 - **FR-035**: All deliverables MUST define applicability to both Production and Lower (test/dev) environments. Production configurations are the primary deliverable. Lower environment configurations MUST document justified deviations from production with rationale. Minimum lower environment baseline: encryption in transit, diagnostic logging to Log Analytics, and identity controls (MFA, Conditional Access, RBAC) MUST match production.
+- **FR-037**: The project MUST produce and maintain an Azure Service Exclusions Tracker (`docs/azure-service-exclusions.md`) that documents every GA Azure Commercial service that cannot be configured to meet FedRAMP High requirements. For each excluded service, the tracker MUST include: (a) the service name, (b) the specific exclusion reason, (c) the FedRAMP High control(s) that cannot be satisfied, (d) the date of assessment, (e) a reference to Microsoft documentation substantiating the limitation, and (f) a re-evaluation trigger (e.g., "re-evaluate when Microsoft adds Private Endpoint support"). The tracker MUST be reviewed periodically and exclusions removed when services gain compliance capabilities.
 
 ### Key Entities
 
@@ -181,7 +185,7 @@ A compliance officer needs a consolidated reference index that maps every config
 
 ### Measurable Outcomes
 
-- **SC-001**: 100% of Azure services in the services reference have a corresponding policy initiative, Terraform module, security control baseline, and logging configuration — zero omissions.
+- **SC-001**: 100% of GA Azure Commercial services have a corresponding policy initiative, Terraform module, security control baseline, and logging configuration — or a documented exclusion in `docs/azure-service-exclusions.md` with justification. Zero services are unaddressed.
 - **SC-002**: Every policy definition maps to at least one NIST 800-53 Rev 5 control ID, and 100% of applicable FedRAMP High baseline controls (per NIST SP 800-53B) are addressed across the full service set.
 - **SC-003**: Every Terraform module, when deployed with defaults, produces a resource that passes its corresponding policy initiative with zero violations.
 - **SC-004**: Every configuration decision across all artifacts includes a source reference URL to authoritative documentation from the regulatory framework hierarchy defined in the constitution.
@@ -200,6 +204,8 @@ A compliance officer needs a consolidated reference index that maps every config
 - **SC-017**: NIST 800-53 IR and CP family control requirements are documented for all in-scope services, with backup/recovery configuration settings and incident detection/response settings specified per service.
 - **SC-018**: Azure AD B2C has a dedicated security control baseline covering custom policies, user flows, identity provider federation, MFA enforcement, and NIST SP 800-63-4 assurance levels.
 - **SC-019**: Cross-cutting Azure identity controls (Conditional Access, MFA, PIM, RBAC) are documented within each service's security control baseline, covering how Azure services consume Entra ID identity features for access control.
+- **SC-020**: A GovRAMP Applicability Guide exists at `docs/govramp-applicability-guide.md` that enables a SLED compliance officer to determine how to reuse FedRAMP High artifacts for GovRAMP verification without requiring GovRAMP-specific configurations. The guide covers impact level mapping, verification statuses, artifact reuse instructions, Fast Track path, continuous monitoring alignment, FedRAMP/GovRAMP comparison, and state reciprocity.
+- **SC-021**: An Azure Service Exclusions Tracker exists at `docs/azure-service-exclusions.md` that documents every GA Azure Commercial service excluded from scope. Each exclusion entry includes: service name, exclusion reason, specific FedRAMP High control(s) not satisfiable, assessment date, Microsoft documentation reference, and re-evaluation trigger. The tracker is maintained as a living document.
 
 ## Assumptions
 
@@ -221,3 +227,4 @@ A compliance officer needs a consolidated reference index that maps every config
 - Incident Response playbooks and Contingency Planning operational procedures are out of scope for this deliverable. The project documents IR and CP technical configuration requirements (automated detection, backup settings, recovery objectives) but does not produce operational runbooks or tabletop exercise plans.
 - Terraform state is stored in Azure Storage per standard Azure backend configuration. State backend security (encryption, RBAC, locking, private endpoint) is an in-scope deliverable.
 - Data retention: minimum 12 months online retention in Log Analytics, 18 months total including archived/cold storage, per FedRAMP High AU-11 control requirements.
+- GovRAMP applicability guidance is a project deliverable but does not include GovRAMP-specific configurations or policy definitions. FedRAMP High is a superset of all GovRAMP impact levels (Low, Low+, Moderate); GovRAMP compliance is achieved by inheritance. GovRAMP membership, PMO engagement, and verification status determinations are the adopter's responsibility.

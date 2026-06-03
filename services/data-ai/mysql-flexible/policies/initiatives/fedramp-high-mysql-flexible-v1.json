@@ -1,0 +1,72 @@
+{
+  "name": "fedramp-high-mysql-flexible-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Database for MySQL Flexible Server Controls",
+    "description": "Policy initiative for Azure Database for MySQL Flexible Server FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Database for MySQL Flexible Server",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-12",
+        "SC-13",
+        "SC-28"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditMysqlFlexibleDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Database for MySQL Flexible Server: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Database for MySQL Flexible Server: Diagnostic Settings Enabled policy."
+        }
+      },
+      "auditMysqlFlexibleCmkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Database for MySQL Flexible Server: Customer-Managed Key Encryption Effect",
+          "description": "Effect for the [FedRAMP High] Azure Database for MySQL Flexible Server: Customer-Managed Key Encryption policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditMysqlFlexibleDiagnosticSettings",
+        "policyDefinitionName": "audit-mysql-flexible-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditMysqlFlexibleDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditMysqlFlexibleCmk",
+        "policyDefinitionName": "audit-mysql-flexible-cmk-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditMysqlFlexibleCmkEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -155,3 +155,66 @@ Alert rules include indicators for Known Exploited Vulnerabilities (KEV):
 | 5 | Microsoft Sentinel Overview | https://learn.microsoft.com/en-us/azure/sentinel/overview |
 | 6 | Log Analytics Data Retention | https://learn.microsoft.com/en-us/azure/azure-monitor/logs/data-retention-configure |
 | 7 | CISA BOD 22-01 | https://www.cisa.gov/binding-operational-directive-22-01 |
+
+---
+
+## Wave 2 Service Coverage (Appended 2026-05-12)
+
+All 95 Wave 2 services follow the same diagnostic settings pattern established in Wave 1. Each service module includes an `azurerm_monitor_diagnostic_setting` resource configured identically.
+
+### Diagnostic Settings Pattern (Wave 2)
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| **Destination** | Shared Log Analytics workspace (`var.log_analytics_workspace_id`) | Centralized correlation per workspace topology above |
+| **Category group** | `allLogs` | Wave 2 default; captures all available diagnostic categories. Per-service category refinement occurs during service-specific approval review. |
+| **Metrics** | `AllMetrics` enabled | Operational monitoring and performance baseline |
+| **Retention** | 12 months online (Log Analytics), 18 months total (6 months archived to Storage Account) | FedRAMP High AU-11 compliance |
+
+### OMB M-21-31 Tier Mapping for Wave 2
+
+Wave 2 services inherit the same tier targets defined in the Wave 1 strategy above. By service category:
+
+| Service Category | Event Types | Target Tier | Implementation |
+|-----------------|-------------|-------------|----------------|
+| **Compute & Storage** (azure-backup, azure-batch, managed-disks, virtual-machines, VMSS, etc.) | Resource CRUD, access audits, backup operations | EL2 | Full diagnostic categories via `allLogs`; Defender for Cloud for EL3 threat detection |
+| **Containers** (AKS, container-registry, container-apps, container-instances) | API server audit, image push/pull, container lifecycle | EL2 | Kubernetes audit logs (EL3 for API server auth events); container insights |
+| **Data & AI** (cosmos-db, sql-database, databricks, machine-learning, etc.) | Data plane access, query execution, model training | EL2 | SQL auditing (EL3 for auth failures); Cosmos DB data plane logs |
+| **Networking** (application-gateway, azure-firewall, load-balancer, WAF, etc.) | Traffic flow, firewall rules, WAF triggers | EL3 | Network security events are critical tier per Wave 1 policy |
+| **Security** (key-vault-managed-hsm, defender-for-cloud, sentinel, attestation) | Key operations, security alerts, policy violations | EL3 | All security service events are critical tier |
+| **Identity** (entra-domain-services) | Authentication, authorization, directory changes | EL3 | Identity events are critical tier per Wave 1 policy |
+| **Integration** (api-management, service-bus, event-grid, logic-apps) | Message delivery, API calls, workflow execution | EL2 | Standard operational logging; auth events elevated to EL3 |
+| **IoT** (iot-hub, iot-dps, digital-twins) | Device telemetry, provisioning, twin changes | EL2 | Device authentication events elevated to EL3 |
+| **Management** (automation, azure-arc, azure-policy, managed-grafana) | Runbook execution, policy evaluation, configuration changes | EL2 | Policy violation events elevated to EL3 |
+| **DevOps** (load-testing, chaos-studio, microsoft-dev-box) | Test execution, experiment results | EL1 | Operational events; no critical security data |
+
+### NIST SP 800-137 Continuous Monitoring Alignment
+
+The Wave 2 logging infrastructure supports NIST SP 800-137 continuous monitoring through three mechanisms:
+
+1. **Automated compliance assessment**: Azure Policy evaluates all 111 service modules continuously. Non-compliant resources generate `AzureActivity` log entries categorized as policy violations (EL3 tier).
+2. **Near-real-time security detection**: Microsoft Sentinel ingests Log Analytics data from all services. Analytic rules provide detection within minutes for critical events (authentication anomalies, configuration drift, unauthorized access).
+3. **Periodic compliance reporting**: Azure Policy compliance dashboard provides real-time aggregate compliance percentage. Monthly review cadence produces compliance trend reports per NIST 800-53 control family.
+
+### OMB M-21-31 Maturity Tier Rollup
+
+| Tier | Wave 1 Services | Wave 2 Services | Total | Percentage |
+|------|----------------|-----------------|-------|------------|
+| **EL3** (Advanced) | 9 (networking + security + identity) | 12 (networking, security, identity service categories) | 21 | 19% |
+| **EL2** (Intermediate) | 12 (compute, storage, data, AI) | 78 (compute, containers, data, integration, IoT, management) | 90 | 81% |
+| **EL1** (Basic) | 2 (operational-only services) | 5 (devops, non-critical management) | 7 | 6% |
+
+> Note: Services may have individual log categories at different tiers (e.g., an EL2 service has authentication events at EL3). The tier above reflects the service's primary classification.
+
+### Cross-Service Log Correlation Approach
+
+All services — Wave 1 and Wave 2 — route diagnostic data to the same per-environment Log Analytics workspace, enabling cross-service correlation:
+
+| Correlation Method | Fields | Use Case |
+|-------------------|--------|----------|
+| **Resource graph** | `ResourceId`, `ResourceGroup`, `SubscriptionId` | Trace events across resources in the same deployment |
+| **Request tracing** | `CorrelationId`, `OperationId` | Track a single API call through dependent resources |
+| **Identity correlation** | `CallerObjectId`, `CallerIpAddress` | Link actions by the same identity across services |
+| **Time-window correlation** | `TimeGenerated` (±5 min window) | Detect coordinated multi-service attacks |
+
+**Tooling**: Azure Monitor Workbooks provide pre-built cross-service security dashboards. Microsoft Sentinel fusion rules correlate anomalies across identity, network, and data plane logs automatically.

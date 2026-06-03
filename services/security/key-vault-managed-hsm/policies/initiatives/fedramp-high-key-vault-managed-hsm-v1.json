@@ -1,0 +1,71 @@
+{
+  "name": "fedramp-high-key-vault-managed-hsm-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Key Vault Managed HSM Controls",
+    "description": "Policy initiative for Azure Key Vault Managed HSM FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Key Vault Managed HSM",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-7",
+        "AC-3"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditKeyVaultManagedHsmDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Key Vault Managed HSM: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Key Vault Managed HSM: Diagnostic Settings Enabled policy."
+        }
+      },
+      "denyKeyVaultManagedHsmPublicNetworkAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Key Vault Managed HSM: Public Network Access Disabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Key Vault Managed HSM: Public Network Access Disabled policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditKeyVaultManagedHsmDiagnosticSettings",
+        "policyDefinitionName": "audit-key-vault-managed-hsm-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditKeyVaultManagedHsmDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyKeyVaultManagedHsmPublicNetworkAccess",
+        "policyDefinitionName": "deny-key-vault-managed-hsm-public-network-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyKeyVaultManagedHsmPublicNetworkAccessEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

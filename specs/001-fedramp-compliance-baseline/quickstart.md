@@ -30,11 +30,15 @@ This is a **compliance artifact repository**, not a compiled application. It pro
 ## Repository Layout
 
 ```
-services/           # Per-service compliance artifacts (23 services)
-├── identity/       # B2C, Managed Identity
+services/           # Per-service compliance artifacts (118 services across 13 groups)
+├── identity/       # B2C, Managed Identity, Entra Domain Services
 ├── networking/     # ExpressRoute, Front Door, Bastion, DNS, VMs, Monitor
 ├── compute-storage/# App Service, Functions, Storage, Key Vault
-└── data-ai/        # OpenAI, AI Search, Purview, Event Hubs, etc.
+├── data-ai/        # OpenAI, AI Search, Purview, Event Hubs, etc.
+├── containers/     # AKS, Container Apps, Container Registry
+├── security/       # Defender, Sentinel, Firewall, DDoS Protection
+├── integration/    # API Management, Logic Apps, Service Bus
+└── ...             # + devops, management, migration, hybrid-edge, iot, web-realtime
 
 shared/             # Shared infrastructure Terraform modules
 ├── terraform/      # Log Analytics, Key Vault, VNet, DNS, State Backend
@@ -90,7 +94,10 @@ Work follows this dependency order:
 ## Key References
 
 - Feature spec: [spec.md](specs/001-fedramp-compliance-baseline/spec.md)
-- Constitution: `.specify/memory/constitution.md`
-- Services reference: `.specify/memory/azure-services-reference.md`
+- Constitution: `.specify/memory/constitution.md` (v8.0.0)
+- Service exclusions tracker: `docs/azure-service-exclusions.md` (authoritative scope-exclusion list)
+- GovRAMP applicability guide: `docs/govramp-applicability-guide.md`
+- Services reference (legacy): `.specify/memory/azure-services-reference.md` — historical reference of services with existing artifact directories; no longer the scope gate
 - Research: [research.md](specs/001-fedramp-compliance-baseline/research.md)
 - Data model: [data-model.md](specs/001-fedramp-compliance-baseline/data-model.md)
+

@@ -1,0 +1,96 @@
+{
+  "name": "fedramp-high-virtual-machines-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Virtual Machines Controls",
+    "description": "Policy initiative for Virtual Machines FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Virtual Machines",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "IA-2",
+        "AC-3",
+        "SC-12",
+        "SC-13",
+        "SC-28"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditVirtualMachinesDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Virtual Machines: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Virtual Machines: Diagnostic Settings Enabled policy."
+        }
+      },
+      "auditVirtualMachinesManagedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Virtual Machines: Managed Identity Required Effect",
+          "description": "Effect for the [FedRAMP High] Virtual Machines: Managed Identity Required policy."
+        }
+      },
+      "auditVirtualMachinesCmkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Virtual Machines: Customer-Managed Key Encryption Effect",
+          "description": "Effect for the [FedRAMP High] Virtual Machines: Customer-Managed Key Encryption policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditVirtualMachinesDiagnosticSettings",
+        "policyDefinitionName": "audit-virtual-machines-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditVirtualMachinesDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditVirtualMachinesManagedIdentity",
+        "policyDefinitionName": "audit-virtual-machines-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditVirtualMachinesManagedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditVirtualMachinesCmk",
+        "policyDefinitionName": "audit-virtual-machines-cmk-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditVirtualMachinesCmkEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

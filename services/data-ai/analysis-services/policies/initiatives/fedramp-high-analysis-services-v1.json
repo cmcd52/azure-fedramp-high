@@ -1,0 +1,47 @@
+{
+  "name": "fedramp-high-analysis-services-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Analysis Services Controls",
+    "description": "Policy initiative for Azure Analysis Services FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Analysis Services",
+      "nistControls": [
+        "AU-12",
+        "AU-2"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditAnalysisServicesDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Analysis Services: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Analysis Services: Diagnostic Settings Enabled policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditAnalysisServicesDiagnosticSettings",
+        "policyDefinitionName": "audit-analysis-services-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditAnalysisServicesDiagnosticSettingsEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

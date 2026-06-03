@@ -1,0 +1,119 @@
+{
+  "name": "fedramp-high-data-factory-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Data Factory Controls",
+    "description": "Policy initiative for Azure Data Factory FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Data Factory",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-7",
+        "AC-3",
+        "IA-2",
+        "SC-12",
+        "SC-13",
+        "SC-28"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditDataFactoryDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Data Factory: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Data Factory: Diagnostic Settings Enabled policy."
+        }
+      },
+      "denyDataFactoryPublicNetworkAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Data Factory: Public Network Access Disabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Data Factory: Public Network Access Disabled policy."
+        }
+      },
+      "auditDataFactoryManagedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Data Factory: Managed Identity Required Effect",
+          "description": "Effect for the [FedRAMP High] Azure Data Factory: Managed Identity Required policy."
+        }
+      },
+      "auditDataFactoryCmkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Data Factory: Customer-Managed Key Encryption Effect",
+          "description": "Effect for the [FedRAMP High] Azure Data Factory: Customer-Managed Key Encryption policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditDataFactoryDiagnosticSettings",
+        "policyDefinitionName": "audit-data-factory-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditDataFactoryDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyDataFactoryPublicNetworkAccess",
+        "policyDefinitionName": "deny-data-factory-public-network-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyDataFactoryPublicNetworkAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditDataFactoryManagedIdentity",
+        "policyDefinitionName": "audit-data-factory-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditDataFactoryManagedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditDataFactoryCmk",
+        "policyDefinitionName": "audit-data-factory-cmk-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditDataFactoryCmkEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

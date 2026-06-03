@@ -1,0 +1,119 @@
+{
+  "name": "fedramp-high-databricks-v1",
+  "properties": {
+    "displayName": "[FedRAMP High] Azure Databricks Controls",
+    "description": "Policy initiative for Azure Databricks FedRAMP High compliance. Bundles transmission confidentiality (SC-8/SC-13), boundary protection (SC-7), authentication (IA-2), encryption-at-rest (SC-28), and audit generation (AU-12) policies. Workloads hosting federal data MUST enforce all bundled controls.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "FedRAMP High",
+      "service": "Azure Databricks",
+      "nistControls": [
+        "AU-12",
+        "AU-2",
+        "SC-7",
+        "AC-3",
+        "IA-2",
+        "SC-12",
+        "SC-13",
+        "SC-28"
+      ],
+      "frameworks": [
+        "FedRAMP High",
+        "DFARS/CUI",
+        "CMMC 2.0 L2"
+      ]
+    },
+    "parameters": {
+      "auditDatabricksDiagnosticSettingsEffect": {
+        "type": "String",
+        "defaultValue": "AuditIfNotExists",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Databricks: Diagnostic Settings Enabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Databricks: Diagnostic Settings Enabled policy."
+        }
+      },
+      "denyDatabricksPublicNetworkAccessEffect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Databricks: Public Network Access Disabled Effect",
+          "description": "Effect for the [FedRAMP High] Azure Databricks: Public Network Access Disabled policy."
+        }
+      },
+      "auditDatabricksManagedIdentityEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Databricks: Managed Identity Required Effect",
+          "description": "Effect for the [FedRAMP High] Azure Databricks: Managed Identity Required policy."
+        }
+      },
+      "auditDatabricksCmkEffect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "[FedRAMP High] Azure Databricks: Customer-Managed Key Encryption Effect",
+          "description": "Effect for the [FedRAMP High] Azure Databricks: Customer-Managed Key Encryption policy."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "auditDatabricksDiagnosticSettings",
+        "policyDefinitionName": "audit-databricks-diagnostic-settings-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditDatabricksDiagnosticSettingsEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "denyDatabricksPublicNetworkAccess",
+        "policyDefinitionName": "deny-databricks-public-network-access-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('denyDatabricksPublicNetworkAccessEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditDatabricksManagedIdentity",
+        "policyDefinitionName": "audit-databricks-managed-identity-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditDatabricksManagedIdentityEffect')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "auditDatabricksCmk",
+        "policyDefinitionName": "audit-databricks-cmk-v1",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditDatabricksCmkEffect')]"
+          }
+        }
+      }
+    ]
+  }
+}

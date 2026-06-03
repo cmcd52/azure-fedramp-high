@@ -40,6 +40,7 @@ This repository addresses **Azure IaaS and PaaS services** deployed in **Azure C
 - **Azure Government** — all configurations target Azure Commercial only
 - **SaaS identity platforms as standalone service deliverables** — Entra ID and Microsoft Intune are SaaS services without Azure ARM resource types and do not receive their own service directories. However, Azure services depend on Entra ID features (Conditional Access, MFA, PIM, RBAC, B2B guest access) for access control — each in-scope service's security control baseline documents how that service consumes Entra ID identity features as Azure tenant configuration, not Entra ID service administration.
 - **Microsoft 365** — GCC, GCC High, and all M365 workloads are excluded
+- **Customer-specific data** — all configurations use anonymized, generic identifiers
 
 ### Customer Responsibility
 
@@ -93,119 +94,6 @@ For authoritative details, see [Microsoft Azure Shared Responsibility Model](htt
 
 ---
 
-## Repository Structure
-
-```
-.gitattributes
-.gitignore
-README.md
-
-.github/                                     # SpecKit agents and prompts for GitHub Copilot
-
-.specify/                                    # SpecKit project config, memory, scripts, and templates
-
-docs/                                        # Research and reference documentation
-├── azure-gov-parity-research/               # Azure Commercial vs Gov Virginia feature parity
-│   ├── 00-executive-summary.md
-│   ├── 01-ai-data-services.md
-│   ├── 02-identity-services.md
-│   ├── 03-compute-storage-services.md
-│   └── 04-networking-security-services.md
-└── pricing/
-    └── Azure_Commercial_vs_Government_Pricing_Comparison.md
-
-services/                                    # Per-service compliance artifacts (23 services)
-├── compute-storage/
-│   ├── policy-initiative-summary.md
-│   ├── app-service/
-│   │   ├── controls/baseline.md
-│   │   ├── logging/config.md
-│   │   ├── policies/                        # README, built-in-references, definitions/, initiatives/
-│   │   └── terraform/                       # README, main.tf, variables.tf, outputs.tf, locals.tf, versions.tf
-│   ├── azure-functions/
-│   │   ├── controls/  logging/  policies/  terraform/
-│   │   └── (same structure as app-service)
-│   ├── azure-storage-account/
-│   │   ├── controls/  logging/  policies/  terraform/
-│   │   └── (same structure as app-service)
-│   └── key-vault/
-│       ├── controls/  logging/  policies/  terraform/
-│       └── (same structure as app-service)
-├── data-ai/
-│   ├── policy-initiative-summary.md
-│   ├── ai-speech-service/
-│   │   ├── controls/  logging/  policies/  terraform/
-│   │   └── (same structure as app-service)
-│   ├── azure-ai-foundry/
-│   │   ├── controls/  logging/  policies/  terraform/
-│   │   └── (same structure)
-│   ├── azure-ai-search/
-│   │   ├── controls/  logging/  policies/  terraform/
-│   │   └── (same structure)
-│   ├── azure-document-intelligence/
-│   │   ├── controls/  logging/  policies/  terraform/
-│   │   └── (same structure)
-│   ├── azure-maps/
-│   │   ├── controls/  logging/  policies/  terraform/
-│   │   └── (same structure)
-│   ├── azure-openai/
-│   │   ├── controls/  logging/  policies/  terraform/
-│   │   └── (same structure)
-│   ├── azure-purview/
-│   │   ├── controls/  logging/  policies/  terraform/
-│   │   └── (same structure)
-│   └── event-hubs/
-│       ├── controls/  logging/  policies/  terraform/
-│       └── (same structure)
-├── identity/
-│   ├── policy-initiative-summary.md
-│   ├── azure-ad-b2c/
-│   │   ├── controls/  logging/  policies/  terraform/
-│   │   └── (same structure as app-service)
-│   └── managed-identity/
-│       └── controls/baseline.md             # Controls only (not a standalone deployed resource)
-└── networking/
-    ├── policy-initiative-summary.md
-    ├── azure-application-insights/
-    │   ├── controls/  logging/  policies/  terraform/
-    │   └── (same structure)
-    ├── azure-front-door/
-    │   ├── controls/  logging/  policies/  terraform/
-    │   └── (same structure)
-    ├── azure-monitor/
-    │   ├── controls/  logging/  policies/  terraform/
-    │   └── (same structure)
-    ├── bastion/
-    │   ├── controls/  logging/  policies/  terraform/
-    │   └── (same structure)
-    ├── dns-private-resolver/
-    │   ├── controls/  logging/  policies/  terraform/
-    │   └── (same structure)
-    ├── expressroute/
-    │   ├── controls/  logging/  policies/  terraform/
-    │   └── (same structure)
-    ├── private-dns-zone/
-    │   ├── controls/  logging/  policies/  terraform/
-    │   └── (same structure)
-    ├── private-endpoint/
-    │   ├── controls/  logging/  policies/  terraform/
-    │   └── (same structure)
-    └── vms-for-dns/
-        ├── controls/  logging/  policies/  terraform/
-        └── (same structure)
-
-shared/                                      # Cross-cutting Azure configuration
-├── logging-strategy.md
-└── terraform/
-    ├── key-vault/                           # README, main.tf, variables.tf, outputs.tf, versions.tf
-    ├── log-analytics/                       # README, main.tf, variables.tf, outputs.tf, locals.tf, versions.tf
-    ├── private-dns-zones/                   # README, main.tf, variables.tf, outputs.tf, locals.tf, versions.tf
-    ├── state-backend/                       # README, main.tf, variables.tf, outputs.tf, versions.tf
-    └── virtual-network/                     # README, main.tf, variables.tf, outputs.tf, locals.tf, versions.tf
-
-specs/                                       # SpecKit feature specs, plans, tasks, contracts, and checklists
-```
-
 ### SpecKit — AI-Assisted Specification Workflow
 
 This project was built using [SpecKit](https://github.com/Serdra/speckit), an AI-assisted specification and implementation workflow for VS Code. SpecKit provides a structured process for moving from natural language requirements through feature specifications, implementation plans, and actionable task lists — all driven by conversational AI agents.
@@ -220,46 +108,23 @@ These artifacts document **how** the project was designed and built but are not 
 
 ## Azure Services In Scope
 
-23 Azure IaaS and PaaS services are covered, organized by service group:
+**118 Azure IaaS and PaaS services** are covered across 13 service groups. Services that cannot meet FedRAMP High requirements are documented with justification in [`docs/azure-service-exclusions.md`](docs/azure-service-exclusions.md).
 
-### AI and Data Services
-| Service | Resource Provider |
-|---------|-------------------|
-| Azure OpenAI | `Microsoft.CognitiveServices` |
-| Azure AI Search | `Microsoft.Search` |
-| Azure AI Foundry | `Microsoft.MachineLearningServices` |
-| Azure Document Intelligence | `Microsoft.CognitiveServices` |
-| AI Speech Service | `Microsoft.CognitiveServices` |
-| Azure Maps | `Microsoft.Maps` |
-| Azure Purview | `Microsoft.Purview` |
-| Event Hubs | `Microsoft.EventHub` |
-
-### Identity and Access Management
-| Service | Resource Provider |
-|---------|-------------------|
-| Azure AD B2C | `Microsoft.AzureActiveDirectory` |
-| Managed Identity | `Microsoft.ManagedIdentity` |
-
-### Compute, Storage, and Web Hosting
-| Service | Resource Provider |
-|---------|-------------------|
-| Azure App Service | `Microsoft.Web` |
-| Azure Functions | `Microsoft.Web` |
-| Azure Storage Account | `Microsoft.Storage` |
-| Key Vault | `Microsoft.KeyVault` |
-
-### Networking, Monitoring, and Security
-| Service | Resource Provider |
-|---------|-------------------|
-| ExpressRoute | `Microsoft.Network` |
-| Azure Front Door | `Microsoft.Cdn` |
-| Bastion | `Microsoft.Network` |
-| DNS Private Resolver | `Microsoft.Network` |
-| Private DNS Zone | `Microsoft.Network` |
-| Private Endpoint | `Microsoft.Network` |
-| Azure Monitor | `Microsoft.OperationalInsights` |
-| Azure Application Insights | `Microsoft.Insights` |
-| VMs for DNS | `Microsoft.Compute` |
+| Service Group | Services | Count |
+|---------------|----------|-------|
+| **Compute & Storage** | App Service, Azure Backup, Azure Batch, Azure Files Premium, Azure Functions, Azure Storage Account, Compute Gallery, Data Box, Dedicated Host, HPC, Key Vault, Managed Disks, NetApp Files, Service Fabric, Site Recovery, Spring Apps, Static Web Apps, Virtual Machines, Virtual Machine Scale Sets, VMware Solution | 20 |
+| **Containers** | Container Apps, Container Instances, Container Registry, Kubernetes Service (AKS) | 4 |
+| **Data & AI** | AI Services Umbrella, AI Speech Service, Analysis Services, Azure AI Foundry, Azure AI Search, Azure Document Intelligence, Azure Maps, Azure OpenAI, Azure Purview, Cosmos DB, Databricks, Data Factory, Data Share, Event Hubs, Fabric, HDInsight, Machine Learning, MySQL Flexible, PostgreSQL Flexible, Power BI Embedded, Redis Cache, Redis Enterprise, SQL Database, SQL Managed Instance, SQL Server Logical, Stream Analytics, Synapse | 27 |
+| **DevOps** | Chaos Studio, Load Testing, Microsoft Dev Box | 3 |
+| **Hybrid & Edge** | Azure Local, Operator Nexus, Stack Edge | 3 |
+| **Identity** | Azure AD B2C, Entra Domain Services, Managed Identity | 3 |
+| **Integration** | API Management, Event Grid, Health Data Services, Logic Apps (Consumption), Logic Apps (Standard), Notification Hubs, Service Bus | 7 |
+| **IoT** | Digital Twins, IoT Central, IoT DPS, IoT Edge, IoT Hub | 5 |
+| **Management** | Advisor, Automation, Azure Arc, Azure Policy, Lighthouse, Managed Grafana, Resource Graph, Update Manager | 8 |
+| **Migration** | Azure Migrate, Database Migration Service | 2 |
+| **Networking** | Application Gateway, Application Insights, Azure CDN, Azure Firewall, Azure Front Door, Azure Monitor, Bastion, DDoS Protection, DNS Private Resolver, ExpressRoute, Load Balancer, NAT Gateway, Network Security Group, Network Watcher, Private DNS Zone, Private Endpoint, Private Link Service, Public IP, Route Server, Traffic Manager, Virtual Network, Virtual WAN, VMs for DNS, VPN Gateway, WAF Policy | 25 |
+| **Security** | Attestation, Bastion Premium, Confidential Ledger, Defender EASM, Defender for Cloud, Key Vault Managed HSM, Sentinel | 7 |
+| **Web & Realtime** | Communication Services, Email Communication Services, SignalR, Web PubSub | 4 |
 
 ---
 
@@ -304,12 +169,17 @@ Frameworks mapped include: NIST 800-53 Rev 5, FedRAMP High, FIPS 140-2/140-3, NI
 
 The `docs/` directory contains research and reference documentation produced during the project:
 
-| Directory | Contents |
+| Directory / File | Contents |
 |-----------|----------|
-| `docs/azure-gov-parity-research/` | Feature parity analysis comparing all 23 in-scope Azure services between Azure Commercial and Azure Government (US Gov Virginia). Includes an executive summary, per-service-group research files, and source references from official Microsoft documentation. |
+| `docs/azure-gov-parity-research/` | Feature parity analysis comparing in-scope Azure services between Azure Commercial and Azure Government (US Gov Virginia). Includes an executive summary, per-service-group research files, and source references from official Microsoft documentation. |
 | `docs/pricing/` | Pricing comparison between Azure Commercial and Azure Government cloud offerings for the in-scope services. |
+| `docs/policy-lifecycle-framework.md` | Azure Policy lifecycle governance: effect escalation paths, exemption workflow, remediation guidance, and versioning schema (FR-006). |
+| `docs/environment-delta.md` | Production vs. lower-environment configuration deltas: defines the NON-NEGOTIABLE baseline and permitted deviations per resource type (FR-035/SC-014). |
+| `docs/govramp-applicability-guide.md` | GovRAMP (formerly StateRAMP) applicability guide mapping FedRAMP High controls to GovRAMP verification levels (FR-036). |
+| `docs/azure-service-exclusions.md` | Exclusion tracker for GA Azure Commercial services that cannot meet FedRAMP High requirements (FR-037/Principle II). |
+| `docs/wave-2-candidates.md` | Wave 2 GA service candidates with classification (policy-eligible vs. exclude). |
 
-> **Note**: The `docs/` directory is supplementary research material. It is not part of the compliance deliverable content but provides valuable context for organizations evaluating Azure Government deployment alongside Azure Commercial.
+> **Note**: The `docs/` directory contains both governance deliverables (policy lifecycle, environment delta, exclusions tracker) and supplementary research material (Gov parity, pricing).
 
 ---
 

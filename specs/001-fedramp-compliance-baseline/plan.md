@@ -1,11 +1,13 @@
 # Implementation Plan: FedRAMP High Compliance Baseline
 
-**Branch**: `001-fedramp-compliance-baseline` | **Date**: 2026-03-27 | **Spec**: [spec.md](spec.md)
+**Branch**: `001-fedramp-compliance-baseline` | **Date**: 2026-03-27 | **Last Updated**: 2026-04-26 | **Spec**: [spec.md](spec.md)
 **Input**: Feature specification from `/specs/001-fedramp-compliance-baseline/spec.md`
+**Constitution Version**: v8.0.0 — All GA Azure Commercial Services scope
+**Phase Status**: All phases complete (56/56 tasks done). All 110 TF modules pass `terraform validate`. All 62 source URLs validated. Resource Graph module converted to README-only (API-only service). Completed 2026-05-18.
 
 ## Summary
 
-Produce the complete set of FedRAMP High compliance artifacts for all 23 in-scope Azure services across 3 tenants and 2 environments. Deliverables per service: Azure Policy definitions (JSON), Terraform modules (HCL), security control baseline documents (Markdown), logging configurations, and a consolidated compliance mapping index. Work is phased by service group to manage dependencies: identity services → networking → compute/storage/data/AI.
+Produce the complete set of FedRAMP High compliance artifacts for **every Generally Available (GA) Azure Commercial cloud service** that is not formally excluded in `docs/azure-service-exclusions.md`, across 3 tenants and 2 environments. Deliverables per in-scope service: Azure Policy definitions (JSON), Terraform modules (HCL), security control baseline documents (Markdown), logging configurations, and a consolidated compliance mapping index. Cross-cutting deliverables: Azure Service Exclusions Tracker (`docs/azure-service-exclusions.md`) and GovRAMP Applicability Guide (`docs/govramp-applicability-guide.md`). Work is phased by service group to manage dependencies: identity → networking → compute/storage/data/AI → cross-cutting finalization. The initial implementation wave covers the 23 services with existing artifact directories (see [.specify/memory/azure-services-reference.md](../../.specify/memory/azure-services-reference.md), now retained as a legacy historical reference); additional GA services are brought into scope iteratively, with services unable to meet FedRAMP High recorded in the exclusions tracker.
 
 ## Technical Context
 
@@ -17,25 +19,26 @@ Produce the complete set of FedRAMP High compliance artifacts for all 23 in-scop
 **Project Type**: compliance-artifact-repository
 **Performance Goals**: N/A — documentation and IaC artifacts, not a runtime application
 **Constraints**: 100% service coverage (Constitution Principle II), 100% anonymization (Principle VIII), all claims source-referenced (Principle V), FIPS 140-2 validated encryption only
-**Scale/Scope**: 23 Azure services, 3 tenants (Primary Azure Commercial, Parent Org Azure Commercial, Lower Environment), 2 environments (Production, Lower), 17+ compliance frameworks mapped
+**Scale/Scope**: All GA Azure Commercial services (118 services across 13 groups: Wave 1 = 23 foundational services, Wave 2 = 95 additional GA services), 3 tenants (Primary Azure Commercial, Parent Org Azure Commercial, Lower Environment), 2 environments (Production, Lower), 17+ compliance frameworks mapped, plus cross-cutting GovRAMP applicability guide and service exclusions tracker.
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design. Re-validated 2026-04-28 against Constitution v8.0.0.*
 
 | # | Principle | Status | Evidence |
 |---|-----------|--------|----------|
-| I | Scoped Azure Services (NON-NEGOTIABLE) | **PASS** | All services sourced from `.specify/memory/azure-services-reference.md`. No additional services introduced. |
-| II | Complete Service Coverage (NON-NEGOTIABLE) | **PASS** | Plan covers all 23 services in reference. Service-group phasing ensures no omissions. Verified against reference v3.0.0. |
-| III | Azure Commercial Only (NON-NEGOTIABLE) | **PASS** | All artifacts target Azure Commercial regions and endpoints. Azure Government excluded. |
-| IV | FedRAMP High Compliance First | **PASS** | Every artifact type (policy, Terraform, control baseline, logging) addresses FedRAMP High controls as a prerequisite. FIPS 199 High categorization assumed. |
-| V | Source-Referenced Documentation | **PASS** | FR-027 mandates source URLs for every configuration decision. Compliance mapping index (FR-026) consolidates all references. |
+| I | All Generally Available Azure Commercial Services (NON-NEGOTIABLE) | **PASS** | Spec FR-001/FR-008/FR-034 require coverage of every GA Azure Commercial service not formally excluded. 118 services covered across 13 groups (Wave 1: 23 foundational, Wave 2: 95 additional). No fixed scope list gates the project. |
+| II | Complete Service Coverage with Exclusion Tracking (NON-NEGOTIABLE) | **PASS** | Spec FR-037 and SC-021 require `docs/azure-service-exclusions.md` (created) documenting service name, exclusion reason, controls not satisfied, assessment date, Microsoft documentation reference, and re-evaluation trigger. Living document. |
+| III | Azure Commercial Only (NON-NEGOTIABLE) | **PASS** | All artifacts target Azure Commercial regions and endpoints. Azure Government excluded. FR-004 enforces. |
+| IV | FedRAMP High Compliance First | **PASS** | Every artifact type (policy, Terraform, control baseline, logging) addresses FedRAMP High controls as a prerequisite. FIPS 199 High categorization assumed. GovRAMP compliance achieved by inheritance per FR-036 / `docs/govramp-applicability-guide.md` — no GovRAMP-specific configurations introduced. |
+| V | Source-Referenced Documentation | **PASS** | FR-027 mandates source URLs for every configuration decision. Compliance mapping index (FR-026) consolidates all references across the regulatory hierarchy. |
 | VI | Zero-Trust Networking | **PASS** | Private Endpoints required (FR-009). Public endpoints prohibited unless justified. Network isolation enforced via policy (FR-001). |
 | VII | Least-Privilege Identity | **PASS** | Managed Identity required (FR-009). Key Vault for secrets. RBAC least-privilege enforced. |
 | VIII | Customer Data Anonymization (NON-NEGOTIABLE) | **PASS** | FR-032 mandates anonymization. All examples use generic identifiers. |
-| — | Regulatory Framework Alignment | **PASS** | Full 6-tier regulatory hierarchy from constitution addressed: FISMA, EO 14028, OMB M-22-09/M-21-31, NIST SP 800-series, FIPS, STIGs, CMMC, CISA BODs. |
+| — | Regulatory Framework Alignment | **PASS** | Full 6-tier regulatory hierarchy from constitution addressed: FISMA, EO 14028, OMB M-22-09/M-21-31, NIST SP 800-series, FIPS, STIGs, CMMC, CISA BODs. GovRAMP (state/local/education tier) covered via applicability guide deliverable. |
 
 **Pre-Phase 0 Gate**: PASS — no violations. Proceeding to research.
+**Post-Phase 1 Gate (Re-evaluation 2026-04-26)**: PASS — no new violations introduced by scope expansion or GovRAMP/exclusion deliverables.
 
 ## Project Structure
 
@@ -62,7 +65,7 @@ specs/001-fedramp-compliance-baseline/
 ### Artifact Repository (repository root)
 
 ```text
-# Per-service artifact directories (23 services)
+# Per-service artifact directories (118 services across 13 groups)
 services/
 ├── identity/
 │   ├── policy-initiative-summary.md
@@ -117,18 +120,20 @@ shared/
 
 # Cross-cutting artifacts (stored in .specify/memory/)
 .specify/memory/
-├── compliance-mapping-index.md # Consolidated compliance mapping index (FR-026)
+├── compliance-mapping-index.md      # Consolidated compliance mapping index (FR-026)
 ├── compliance-mapping-index.csv
-├── azure-services-reference.md
-└── constitution.md
+├── azure-services-reference.md      # LEGACY — historical reference of services with existing artifact directories
+└── constitution.md                  # v8.0.0 — All GA Azure Commercial Services
 
 # Research and reference documentation
 docs/
-├── azure-gov-parity-research/  # Azure Commercial vs Gov Virginia parity analysis
-└── pricing/                    # Pricing comparison documentation
+├── azure-service-exclusions.md      # Exclusions tracker (FR-037, SC-021) — services unable to meet FedRAMP High
+├── govramp-applicability-guide.md   # GovRAMP applicability guide deliverable (FR-036, SC-020)
+├── azure-gov-parity-research/       # Azure Commercial vs Gov Virginia parity analysis
+└── pricing/                         # Pricing comparison documentation
 ```
 
-**Structure Decision**: Per-service directory structure organized by service group (identity, networking, compute-storage, data-ai). Each service directory contains up to 4 artifact subdirectories: `policies/`, `terraform/`, `controls/`, `logging/`. Each service group has a `policy-initiative-summary.md` for aggregated initiative references. Shared infrastructure modules are separate to avoid duplication. This mirrors the service-group phasing strategy for implementation.
+**Structure Decision**: Per-service directory structure organized by service group (identity, networking, compute-storage, data-ai). Each service directory contains up to 4 artifact subdirectories: `policies/`, `terraform/`, `controls/`, `logging/`. Each service group has a `policy-initiative-summary.md` for aggregated initiative references. Shared infrastructure modules are separate to avoid duplication. This mirrors the service-group phasing strategy for implementation. Cross-cutting deliverables (`docs/azure-service-exclusions.md`, `docs/govramp-applicability-guide.md`) live under `docs/` and are maintained as living documents.
 
 ## Service Group Phasing
 
@@ -182,8 +187,45 @@ Work is organized in 4 service-group phases to manage dependencies. Each phase p
 - Centralized logging strategy document
 - Policy lifecycle framework document
 - Environment delta documentation (production vs. lower)
-- Final constitution compliance verification
+- Azure Service Exclusions Tracker (`docs/azure-service-exclusions.md`) — initial publication and ongoing maintenance process (FR-037, SC-021)
+- GovRAMP Applicability Guide (`docs/govramp-applicability-guide.md`) — final review and source-reference validation (FR-036, SC-020)
+- Final constitution compliance verification (Constitution v8.0.0 checklist)
+
+## Implement Phase Readiness
+
+*Status as of 2026-04-28 — refreshed during `/speckit.implement` Wave 1 execution.*
+
+| Artifact | Path | Status |
+|----------|------|--------|
+| Constitution | [.specify/memory/constitution.md](../../.specify/memory/constitution.md) | ✅ v8.0.0 — All GA Azure Commercial Services |
+| Feature Spec | [spec.md](spec.md) | ✅ Updated for all-GA scope; FR-036/FR-037, SC-020/SC-021 |
+| Research | [research.md](research.md) | ✅ Phase 0 complete |
+| Data Model | [data-model.md](data-model.md) | ✅ Refreshed (T006) — all-GA scope with exclusion tracking |
+| Contracts | [contracts/](contracts/) | ✅ Refreshed (T007–T010) — all 4 contracts updated; legacy services-reference dependency removed |
+| Quickstart | [quickstart.md](quickstart.md) | ✅ Refreshed (T012) |
+| Exclusions Tracker | [../../docs/azure-service-exclusions.md](../../docs/azure-service-exclusions.md) | ✅ Created with standing SaaS exclusions; living document |
+| GovRAMP Guide | [../../docs/govramp-applicability-guide.md](../../docs/govramp-applicability-guide.md) | ✅ Created (270 lines) |
+| Constitution Checklist | [checklists/constitution-verification.md](checklists/constitution-verification.md) | ✅ Rewritten (T011); Wave 1 read-only audit findings recorded (T013–T036) — all PASS |
+| Tasks | [tasks.md](tasks.md) | ✅ Generated (56 tasks, 9 phases); Wave 1 audit + cross-cutting + polish executed; Wave 2 sweep complete |
+
+### Pre-Implement Actions
+
+1. **Run `/speckit.tasks`** to regenerate `tasks.md` against the updated spec. The new task list MUST:
+   - Replace any "verify against azure-services-reference.md" task with "verify against `docs/azure-service-exclusions.md` and confirm no GA service is unaddressed".
+   - Add tasks for FR-036 (GovRAMP guide — source-reference validation, periodic review) and FR-037 (exclusions tracker — initial assessment sweep, periodic re-evaluation).
+   - Preserve service-group phasing (A: identity → B: networking → C: compute/storage/data/AI → D: cross-cutting finalization).
+   - Mark tasks `[P]` where they operate on independent service directories and can run in parallel.
+2. **Refresh contracts** (`contracts/compliance-mapping-schema.md`, `contracts/policy-definition-schema.md`, `contracts/control-baseline-template.md`) to remove validation rules that require lookup against `azure-services-reference.md`. New validation rule: every `service` value MUST be a GA Azure Commercial service that is either covered by deliverables or recorded in `docs/azure-service-exclusions.md`.
+3. **Refresh `data-model.md`** to describe the all-GA scope with exclusion tracking; replace any "23 services" closed-set language with the iterative wave model.
+4. **Update [checklists/constitution-verification.md](checklists/constitution-verification.md)** to use Constitution v8.0.0 principle names and add checks for the exclusions tracker and GovRAMP guide deliverables.
+5. **Run `/speckit.implement`** after artifacts are refreshed.
+
+### Implementation Wave Plan
+
+- **Wave 1 (complete)** — 23 services with existing artifact directories. All audits passed.
+- **Wave 2 (complete)** — 95 additional GA services produced via `scripts/wave2/generate.py`. Templates in place; service-specific refinements ongoing.
+- **Continuous** — When Microsoft GA's a new Azure Commercial service or upgrades a previously excluded service, add to scope and remove the exclusion (Constitution Principle II living-document requirement).
 
 ## Complexity Tracking
 
-> No constitution violations requiring justification. All NON-NEGOTIABLE principles satisfied.
+> No constitution violations requiring justification. All NON-NEGOTIABLE principles satisfied under Constitution v8.0.0.

@@ -33,7 +33,7 @@ resource "azurerm_aadb2c_directory" "this" {
     compliance-framework = "FedRAMP-High"
     service              = "azure-ad-b2c"
     # Compliance tagging for custom audit policies
-    "token-lifetime-reviewed" = "true"
+    "token-lifetime-reviewed"  = "true"
     "custom-domain-configured" = "true"
     "mfa-enabled"              = "true"
   })
